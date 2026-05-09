@@ -35,5 +35,13 @@ pipeline {
                 sh 'docker build -t foodapp:v1 .'
             }
         }
+
+        stage('Docker Push') {
+    steps {
+        sh 'docker login -u zeeshancloud15  -p Uddin@1234#'
+        sh 'docker tag foodapp:v1 zeeshancloud15/foodapp:v1'
+        sh 'docker push zeeshancloud15/foodapp:v1'
+    }
+}
     }
 }

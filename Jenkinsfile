@@ -4,15 +4,15 @@ pipeline {
 
     stages {
 
-        stage('GitHub Clone') {
+        stage('Clone') {
             steps {
-                echo 'Code cloned successfully'
+                echo 'GitHub Connected'
             }
         }
 
-        stage('Build Start') {
+        stage('Maven Build') {
             steps {
-                echo 'Pipeline working successfully'
+                sh 'mvn clean package'
             }
         }
     }

@@ -2,17 +2,31 @@ pipeline {
 
     agent any
 
+    environment {
+        SONAR_TOKEN = credentials('sonar-token')
+    }
+
     stages {
 
-        stage('Clone') {
+        stage('Build') {
             steps {
-                echo 'GitHub Connected'
+                sh 'mvn clean package'
             }
         }
 
-        stage('Maven Build') {
+        stage('SonarQube Scan') {
+
             steps {
-                sh 'mvn clean package'
+
+                withSonarQubeEnv('sonar-server') {
+
+                    sh """
+                    mvn sonar:sonar \
+                    -Dsonar.projectKey=food-delivery \
+                    -Dsonar.host.url=http://13.49.80.135:9000 \
+                    -Dsonar.login=$SONAR_TOKEN
+                    """
+                }
             }
         }
     }

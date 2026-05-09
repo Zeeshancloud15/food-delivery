@@ -1,8 +1,13 @@
+package com.fooddelivery;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
 public class App {
 
     public static void main(String[] args) {
 
-        System.out.println("Food Delivery Application Build Success");
-
+        SpringApplication.run(App.class, args);
     }
 }

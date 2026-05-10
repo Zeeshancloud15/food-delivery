@@ -2,11 +2,26 @@ pipeline {
 
     agent any
 
+    tools {
+        jdk 'jdk21'
+    }
+
     environment {
+        JAVA_HOME = "/usr/lib/jvm/java-21-openjdk-amd64"
+        PATH = "${JAVA_HOME}/bin:${env.PATH}"
+
         SONAR_TOKEN = credentials('sonar')
+        DOCKER_PASS = credentials('docker-pass')
     }
 
     stages {
+
+        stage('Check Java Version') {
+            steps {
+                sh 'java -version'
+                sh 'javac -version'
+            }
+        }
 
         stage('Build') {
             steps {
@@ -37,11 +52,16 @@ pipeline {
         }
 
         stage('Docker Push') {
-    steps {
-        sh 'docker login -u zeeshancloud15  -p Uddin@1234#'
-        sh 'docker tag foodapp:v1 zeeshancloud15/foodapp:v1'
-        sh 'docker push zeeshancloud15/foodapp:v1'
-    }
-}
+            steps {
+
+                sh '''
+                echo $DOCKER_PASS | docker login -u zeeshancloud15 --password-stdin
+                '''
+
+                sh 'docker tag foodapp:v1 zeeshancloud15/foodapp:v1'
+
+                sh 'docker push zeeshancloud15/foodapp:v1'
+            }
+        }
     }
 }

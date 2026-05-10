@@ -8,7 +8,6 @@ pipeline {
         PATH = "${JAVA_HOME}/bin:${env.PATH}"
 
         SONAR_TOKEN = credentials('sonar')
-        DOCKER_PASS = credentials('docker-pass')
     }
 
     stages {
@@ -27,7 +26,6 @@ pipeline {
         }
 
         stage('SonarQube Scan') {
-
             steps {
 
                 withSonarQubeEnv('sonar-server') {
@@ -51,9 +49,7 @@ pipeline {
         stage('Docker Push') {
             steps {
 
-                sh '''
-                echo $DOCKER_PASS | docker login -u zeeshancloud15 --password-stdin
-                '''
+                sh 'docker login -u zeeshancloud15 -p Uddin@1234#'
 
                 sh 'docker tag foodapp:v1 zeeshancloud15/foodapp:v1'
 

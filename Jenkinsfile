@@ -91,7 +91,7 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                sshagent(['k8s-ssh']) {
+                sshagent(['k8s-ssh1']) {
                     sh '''
                         ssh -o StrictHostKeyChecking=no ubuntu@16.170.222.167 "
                             kubectl apply -f /home/ubuntu/deployment.yaml &&

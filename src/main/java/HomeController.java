@@ -1,4 +1,4 @@
-package com.fooddelivery;
+package com.example;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -8,7 +8,6 @@ public class HomeController {
 
     @GetMapping("/")
     public String home() {
-
-        return "Food Delivery Application Running";
+        return "Java Maven CI/CD with SonarQube";
     }
 }

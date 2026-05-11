@@ -3,11 +3,22 @@ pipeline {
 
     environment {
         JAVA_HOME = '/usr/lib/jvm/java-21-openjdk-amd64'
-        PATH = "${JAVA_HOME}/bin:/usr/bin:/bin:/usr/local/bin"
+        PATH = "${JAVA_HOME}/bin:/usr/local/bin:/usr/bin:/bin"
         SCANNER_HOME = '/opt/sonar-scanner'
     }
 
     stages {
+
+        stage('Check Java') {
+            steps {
+                sh '''
+                echo $JAVA_HOME
+                java -version
+                javac -version
+                mvn -version
+                '''
+            }
+        }
 
         stage('Checkout Code') {
             steps {
@@ -16,25 +27,13 @@ pipeline {
             }
         }
 
-        stage('Check Java Version') {
+        stage('Build') {
             steps {
-                sh 'java -version'
+                sh 'mvn clean package -DskipTests'
             }
         }
 
-        stage('Check Maven Version') {
-            steps {
-                sh 'mvn -version'
-            }
-        }
-
-        stage('Build Application') {
-            steps {
-                sh 'mvn clean package'
-            }
-        }
-
-        stage('Run Test Cases') {
+        stage('Test') {
             steps {
                 sh 'mvn test'
             }
@@ -58,16 +57,6 @@ pipeline {
             steps {
                 sh 'docker build -t food-delivery .'
             }
-        }
-    }
-
-    post {
-        success {
-            echo 'Pipeline Success'
-        }
-
-        failure {
-            echo 'Pipeline Failed'
         }
     }
 }

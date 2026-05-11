@@ -7,6 +7,7 @@ pipeline {
         CONTAINER_NAME = 'food-app-container'
         DOCKER_HUB_USER = 'zeeshancloud15'
         DOCKER_IMAGE = 'zeeshancloud15/food-app:latest'
+        K8S_SERVER = 'ubuntu@16.170.222.167'
     }
 
     stages {
@@ -68,7 +69,7 @@ pipeline {
             }
         }
 
-        stage('Docker Run') {
+        stage('Docker Run (Local Test)') {
             steps {
                 sh '''
                     docker stop ${CONTAINER_NAME} || true
@@ -81,11 +82,23 @@ pipeline {
                 '''
             }
         }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh '''
+                    ssh -o StrictHostKeyChecking=no ${K8S_SERVER} "
+                        kubectl apply -f /home/ubuntu/deployment.yaml &&
+                        kubectl apply -f /home/ubuntu/service.yaml &&
+                        kubectl rollout restart deployment food-app
+                    "
+                '''
+            }
+        }
     }
 
     post {
         success {
-            echo 'SUCCESS ✅ Pipeline completed successfully'
+            echo 'SUCCESS 🚀 CI/CD + Kubernetes Deployment Done'
         }
         failure {
             echo 'FAILED ❌ Check Jenkins logs'

@@ -5,6 +5,8 @@ pipeline {
         SONARQUBE = 'sonar-qube'
         IMAGE_NAME = 'food-app'
         CONTAINER_NAME = 'food-app-container'
+        DOCKER_HUB_USER = 'zeeshancloud15'
+        DOCKER_IMAGE = 'zeeshancloud15/food-app:latest'
     }
 
     stages {
@@ -53,23 +55,40 @@ pipeline {
             }
         }
 
+        stage('Docker Login & Push') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh '''
+                        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+
+                        docker tag food-app ${DOCKER_IMAGE}
+                        docker push ${DOCKER_IMAGE}
+                    '''
+                }
+            }
+        }
+
         stage('Docker Run') {
             steps {
-                sh """
+                sh '''
                     docker stop ${CONTAINER_NAME} || true
                     docker rm ${CONTAINER_NAME} || true
-                    docker run -d -p 5000:5000 --name ${CONTAINER_NAME} ${IMAGE_NAME}
-                """
+
+                    docker run -d \
+                    -p 8081:8080 \
+                    --name ${CONTAINER_NAME} \
+                    food-app
+                '''
             }
         }
     }
 
     post {
         success {
-            echo 'SUCCESS ✅ Pipeline completed'
+            echo 'SUCCESS ✅ Pipeline completed successfully'
         }
         failure {
-            echo 'FAILED ❌ Check logs'
+            echo 'FAILED ❌ Check Jenkins logs'
         }
     }
 }

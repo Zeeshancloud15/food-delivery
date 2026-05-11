@@ -11,7 +11,7 @@ pipeline {
 
         stage('Checkout Code') {
             steps {
-                git 'https://github.com/Zeeshancloud15/food-delivery.git'
+                git branch: 'main', url: 'https://github.com/Zeeshancloud15/food-delivery.git'
             }
         }
 
@@ -66,10 +66,10 @@ pipeline {
 
     post {
         success {
-            echo 'SUCCESS ✅'
+            echo 'SUCCESS ✅ Pipeline completed'
         }
         failure {
-            echo 'FAILED ❌'
+            echo 'FAILED ❌ Check logs'
         }
     }
 }

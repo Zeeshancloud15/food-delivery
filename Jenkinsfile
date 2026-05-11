@@ -1,60 +1,77 @@
 pipeline {
-
     agent any
 
     environment {
+        JAVA_HOME = "/usr/lib/jvm/java-17-openjdk-amd64"
+        MAVEN_HOME = "/opt/maven"
+        SCANNER_HOME = "/opt/sonar-scanner"
 
-        JAVA_HOME = "/usr/lib/jvm/java-21-openjdk-amd64"
-        PATH = "${JAVA_HOME}/bin:${env.PATH}"
-
-        SONAR_TOKEN = credentials('sonar')
+        PATH = "${JAVA_HOME}/bin:${MAVEN_HOME}/bin:${PATH}"
     }
 
     stages {
 
-        stage('Check Java Version') {
+        stage('Checkout Code') {
             steps {
-                sh 'java -version'
-                sh 'javac -version'
+                git branch: 'main',
+                url: 'https://github.com/Zeeshancloud15/food-delivery.git'
             }
         }
 
-        stage('Build') {
+        stage('Check Java Version') {
+            steps {
+                sh 'java -version'
+            }
+        }
+
+        stage('Check Maven Version') {
+            steps {
+                sh 'mvn -version'
+            }
+        }
+
+        stage('Build Application') {
             steps {
                 sh 'mvn clean package'
             }
         }
 
-        stage('SonarQube Scan') {
+        stage('Run Test Cases') {
             steps {
+                sh 'mvn test'
+            }
+        }
 
-                withSonarQubeEnv('sonar-server') {
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('sonarqube-server') {
 
-                    sh """
-                    mvn sonar:sonar \
+                    sh '''
+                    $SCANNER_HOME/bin/sonar-scanner \
                     -Dsonar.projectKey=food-delivery \
-                    -Dsonar.host.url=http://13.49.80.135:9000 \
-                    -Dsonar.login=$SONAR_TOKEN
-                    """
+                    -Dsonar.sources=src \
+                    -Dsonar.java.binaries=target
+                    '''
                 }
             }
         }
 
         stage('Docker Build') {
             steps {
-                sh 'docker build -t foodapp:v1 .'
+                sh 'docker build -t food-delivery-app .'
             }
         }
 
-        stage('Docker Push') {
-            steps {
+    }
 
-                sh 'docker login -u zeeshancloud15 -p Uddin@1234#'
+    post {
 
-                sh 'docker tag foodapp:v1 zeeshancloud15/foodapp:v1'
+        success {
+            echo 'Pipeline Executed Successfully'
+        }
 
-                sh 'docker push zeeshancloud15/foodapp:v1'
-            }
+        failure {
+            echo 'Pipeline Failed'
         }
     }
 }

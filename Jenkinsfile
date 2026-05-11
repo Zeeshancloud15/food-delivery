@@ -1,12 +1,15 @@
 pipeline {
     agent any
 
-    environment {
-        JAVA_HOME = "/usr/lib/jvm/java-17-openjdk-amd64"
-        MAVEN_HOME = "/opt/maven"
-        SCANNER_HOME = "/opt/sonar-scanner"
+    tools {
+        jdk 'JDK21'
+        maven 'Maven3'
+    }
 
-        PATH = "${JAVA_HOME}/bin:${MAVEN_HOME}/bin:${PATH}"
+    environment {
+        JAVA_HOME = '/usr/lib/jvm/java-21-openjdk-amd64'
+        PATH = "${JAVA_HOME}/bin:${env.PATH}"
+        SCANNER_HOME = tool 'sonar-scanner'
     }
 
     stages {
@@ -44,12 +47,12 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('sonar-qube') {
-
+                withSonarQubeEnv('sonarqube') {
                     sh '''
                     $SCANNER_HOME/bin/sonar-scanner \
                     -Dsonar.projectKey=food-delivery \
-                    -Dsonar.sources=src \
+                    -Dsonar.projectName=food-delivery \
+                    -Dsonar.sources=. \
                     -Dsonar.java.binaries=target
                     '''
                 }
@@ -58,16 +61,14 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                sh 'docker build -t food-delivery-app .'
+                sh 'docker build -t food-delivery .'
             }
         }
-
     }
 
     post {
-
         success {
-            echo 'Pipeline Executed Successfully'
+            echo 'Pipeline Success'
         }
 
         failure {

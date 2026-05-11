@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        SONARQUBE = 'sonarqube'
+        SONARQUBE = 'sonar-qube'
         IMAGE_NAME = 'food-app'
         CONTAINER_NAME = 'food-app-container'
     }
@@ -29,7 +29,7 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('sonarqube') {
+                withSonarQubeEnv('sonar-qube') {
                     sh '''
                         mvn sonar:sonar \
                         -Dsonar.projectKey=food-delivery \

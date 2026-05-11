@@ -1,41 +1,27 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'maven3'
+    }
+
     environment {
-        JAVA_HOME = '/usr/lib/jvm/java-21-openjdk-amd64'
-        PATH = "${JAVA_HOME}/bin:/usr/local/bin:/usr/bin:/bin"
-        SCANNER_HOME = '/opt/sonar-scanner'
+        SONARQUBE = 'sonar-qube'
+        IMAGE_NAME = 'food-app'
+        CONTAINER_NAME = 'food-app-container'
     }
 
     stages {
 
-        stage('Check Java') {
-            steps {
-                sh '''
-                echo $JAVA_HOME
-                java -version
-                javac -version
-                mvn -version
-                '''
-            }
-        }
-
         stage('Checkout Code') {
             steps {
-                git branch: 'main',
-                url: 'https://github.com/Zeeshancloud15/food-delivery.git'
+                git 'https://github.com/your-repo/food-delivery.git'
             }
         }
 
         stage('Build') {
             steps {
                 sh 'mvn clean compile'
-            }
-        }
-
-        stage('Package') {
-            steps {
-                sh 'mvn package -DskipTests'
             }
         }
 
@@ -49,29 +35,54 @@ pipeline {
             steps {
                 withSonarQubeEnv('sonar-qube') {
                     sh '''
-                    $SCANNER_HOME/bin/sonar-scanner \
-                    -Dsonar.projectKey=food-delivery \
-                    -Dsonar.projectName=food-delivery \
-                    -Dsonar.sources=src \
-                    -Dsonar.java.binaries=target/classes
+                        mvn sonar:sonar \
+                        -Dsonar.projectKey=food-delivery \
+                        -Dsonar.projectName=food-delivery \
+                        -Dsonar.sources=src \
+                        -Dsonar.java.binaries=target/classes
                     '''
                 }
             }
         }
 
+        stage('Build Package') {
+            steps {
+                sh 'mvn clean package -DskipTests'
+            }
+        }
+
         stage('Docker Build') {
             steps {
-                sh 'docker build -t food-delivery:latest .'
+                sh "docker build -t ${IMAGE_NAME} ."
+            }
+        }
+
+        stage('Stop Old Container') {
+            steps {
+                sh """
+                    docker stop ${CONTAINER_NAME} || true
+                    docker rm ${CONTAINER_NAME} || true
+                """
             }
         }
 
         stage('Docker Run') {
             steps {
-                sh '''
-                docker rm -f food-delivery || true
-                docker run -d --name food-delivery -p 5000:5000 food-delivery:latest
-                '''
+                sh """
+                    docker run -d -p 5000:5000 \
+                    --name ${CONTAINER_NAME} \
+                    ${IMAGE_NAME}
+                """
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'CI/CD Pipeline SUCCESS ✅'
+        }
+        failure {
+            echo 'CI/CD Pipeline FAILED ❌'
         }
     }
 }

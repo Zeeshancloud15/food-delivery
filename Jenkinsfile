@@ -1,12 +1,8 @@
 pipeline {
     agent any
 
-    tools {
-        maven 'maven3'
-    }
-
     environment {
-        SONARQUBE = 'sonar-qube'
+        SONARQUBE = 'sonarqube'
         IMAGE_NAME = 'food-app'
         CONTAINER_NAME = 'food-app-container'
     }
@@ -15,7 +11,7 @@ pipeline {
 
         stage('Checkout Code') {
             steps {
-                git 'https://github.com/your-repo/food-delivery.git'
+                git 'https://github.com/Zeeshancloud15/food-delivery.git'
             }
         }
 
@@ -33,7 +29,7 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('sonar-qube') {
+                withSonarQubeEnv('sonarqube') {
                     sh '''
                         mvn sonar:sonar \
                         -Dsonar.projectKey=food-delivery \
@@ -45,7 +41,7 @@ pipeline {
             }
         }
 
-        stage('Build Package') {
+        stage('Package') {
             steps {
                 sh 'mvn clean package -DskipTests'
             }
@@ -57,21 +53,12 @@ pipeline {
             }
         }
 
-        stage('Stop Old Container') {
+        stage('Docker Run') {
             steps {
                 sh """
                     docker stop ${CONTAINER_NAME} || true
                     docker rm ${CONTAINER_NAME} || true
-                """
-            }
-        }
-
-        stage('Docker Run') {
-            steps {
-                sh """
-                    docker run -d -p 5000:5000 \
-                    --name ${CONTAINER_NAME} \
-                    ${IMAGE_NAME}
+                    docker run -d -p 5000:5000 --name ${CONTAINER_NAME} ${IMAGE_NAME}
                 """
             }
         }
@@ -79,10 +66,10 @@ pipeline {
 
     post {
         success {
-            echo 'CI/CD Pipeline SUCCESS ✅'
+            echo 'SUCCESS ✅'
         }
         failure {
-            echo 'CI/CD Pipeline FAILED ❌'
+            echo 'FAILED ❌'
         }
     }
 }

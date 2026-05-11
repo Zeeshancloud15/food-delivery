@@ -7,6 +7,8 @@ pipeline {
         CONTAINER_NAME = 'food-app-container'
         DOCKER_HUB_USER = 'zeeshancloud15'
         DOCKER_IMAGE = 'zeeshancloud15/food-app:latest'
+
+        // Kubernetes Master
         K8S_SERVER = 'ubuntu@16.170.222.167'
     }
 
@@ -58,7 +60,11 @@ pipeline {
 
         stage('Docker Login & Push') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-cred',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
                     sh '''
                         echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
 
@@ -85,23 +91,25 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                sh '''
-                    ssh -o StrictHostKeyChecking=no ${K8S_SERVER} "
-                        kubectl apply -f /home/ubuntu/deployment.yaml &&
-                        kubectl apply -f /home/ubuntu/service.yaml &&
-                        kubectl rollout restart deployment food-app
-                    "
-                '''
+                sshagent(['k8s-ssh']) {
+                    sh '''
+                        ssh -o StrictHostKeyChecking=no ubuntu@16.170.222.167 "
+                            kubectl apply -f /home/ubuntu/deployment.yaml &&
+                            kubectl apply -f /home/ubuntu/service.yaml &&
+                            kubectl rollout restart deployment food-app
+                        "
+                    '''
+                }
             }
         }
     }
 
     post {
         success {
-            echo 'SUCCESS 🚀 CI/CD + Kubernetes Deployment Done'
+            echo 'SUCCESS 🚀 Full CI/CD + Kubernetes Deployment Done'
         }
         failure {
-            echo 'FAILED ❌ Check Jenkins logs'
+            echo 'FAILED ❌ Check logs'
         }
     }
 }

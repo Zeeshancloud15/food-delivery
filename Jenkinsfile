@@ -9,10 +9,10 @@ pipeline {
 
     stages {
 
-        stage('Check Java') {
+        stage('Check Java & Maven') {
             steps {
                 sh '''
-                echo $JAVA_HOME
+                echo "JAVA_HOME=$JAVA_HOME"
                 java -version
                 javac -version
                 mvn -version
@@ -27,13 +27,19 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build Application') {
             steps {
-                sh 'mvn clean package -DskipTests'
+                sh 'mvn clean compile'
             }
         }
 
-        stage('Test') {
+        stage('Package Application') {
+            steps {
+                sh 'mvn package -DskipTests'
+            }
+        }
+
+        stage('Run Test Cases') {
             steps {
                 sh 'mvn test'
             }
@@ -46,8 +52,8 @@ pipeline {
                     $SCANNER_HOME/bin/sonar-scanner \
                     -Dsonar.projectKey=food-delivery \
                     -Dsonar.projectName=food-delivery \
-                    -Dsonar.sources=. \
-                    -Dsonar.java.binaries=target
+                    -Dsonar.sources=src \
+                    -Dsonar.java.binaries=target/classes
                     '''
                 }
             }
@@ -55,8 +61,27 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                sh 'docker build -t food-delivery .'
+                sh 'docker build -t food-delivery:latest .'
             }
+        }
+
+        stage('Docker Run') {
+            steps {
+                sh '''
+                docker rm -f food-delivery || true
+                docker run -d --name food-delivery -p 5000:5000 food-delivery:latest
+                '''
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline Success'
+        }
+
+        failure {
+            echo 'Pipeline Failed'
         }
     }
 }

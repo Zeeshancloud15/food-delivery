@@ -9,10 +9,10 @@ pipeline {
 
     stages {
 
-        stage('Check Java & Maven') {
+        stage('Check Java') {
             steps {
                 sh '''
-                echo "JAVA_HOME=$JAVA_HOME"
+                echo $JAVA_HOME
                 java -version
                 javac -version
                 mvn -version
@@ -27,19 +27,19 @@ pipeline {
             }
         }
 
-        stage('Build Application') {
+        stage('Build') {
             steps {
                 sh 'mvn clean compile'
             }
         }
 
-        stage('Package Application') {
+        stage('Package') {
             steps {
                 sh 'mvn package -DskipTests'
             }
         }
 
-        stage('Run Test Cases') {
+        stage('Test') {
             steps {
                 sh 'mvn test'
             }
@@ -72,16 +72,6 @@ pipeline {
                 docker run -d --name food-delivery -p 5000:5000 food-delivery:latest
                 '''
             }
-        }
-    }
-
-    post {
-        success {
-            echo 'Pipeline Success'
-        }
-
-        failure {
-            echo 'Pipeline Failed'
         }
     }
 }

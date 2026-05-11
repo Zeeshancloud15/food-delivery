@@ -1,15 +1,10 @@
 pipeline {
     agent any
 
-    tools {
-        jdk 'JDK21'
-        maven 'Maven3'
-    }
-
     environment {
         JAVA_HOME = '/usr/lib/jvm/java-21-openjdk-amd64'
-        PATH = "${JAVA_HOME}/bin:${env.PATH}"
-        SCANNER_HOME = tool 'sonar-scanner'
+        PATH = "${JAVA_HOME}/bin:/usr/bin:/bin:/usr/local/bin"
+        SCANNER_HOME = '/opt/sonar-scanner'
     }
 
     stages {

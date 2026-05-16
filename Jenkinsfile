@@ -93,7 +93,7 @@ pipeline {
             steps {
                 sshagent(['k8s-ssh1']) {
                     sh '''
-                        ssh -o StrictHostKeyChecking=no ubuntu@13.61.179.71
+                        ssh -o StrictHostKeyChecking=no  ${K8S_SERVER}
                         kubectl apply -f https://raw.githubusercontent.com/Zeeshancloud15/food-delivery/main/deployment.yaml &&
                         kubectl apply -f https://raw.githubusercontent.com/Zeeshancloud15/food-delivery/main/service.yaml &&
                         kubectl rollout restart deployment food-app

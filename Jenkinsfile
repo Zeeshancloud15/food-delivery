@@ -9,7 +9,7 @@ pipeline {
         DOCKER_IMAGE = 'zeeshancloud15/food-app:latest'
 
         // Kubernetes Master
-        K8S_SERVER = 'ubuntu@16.170.222.167'
+        K8S_SERVER = 'ubuntu@16.170.213.84'
     }
 
     stages {
@@ -93,7 +93,7 @@ pipeline {
             steps {
                 sshagent(['k8s-ssh1']) {
                     sh '''
-                        ssh -o StrictHostKeyChecking=no ubuntu@13.63.49.250 "
+                        ssh -o StrictHostKeyChecking=no ubuntu@ 13.61.179.71
                         kubectl apply -f https://raw.githubusercontent.com/Zeeshancloud15/food-delivery/main/deployment.yaml &&
                         kubectl apply -f https://raw.githubusercontent.com/Zeeshancloud15/food-delivery/main/service.yaml &&
                         kubectl rollout restart deployment food-app

@@ -8,7 +8,7 @@ pipeline {
         DOCKER_HUB_USER = 'zeeshancloud15'
         DOCKER_IMAGE = 'zeeshancloud15/food-app:latest'
 
-        // Kubernetes Master
+        // Kubernetes Master Server
         K8S_SERVER = 'ubuntu@16.170.213.84'
     }
 
@@ -16,7 +16,8 @@ pipeline {
 
         stage('Checkout Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/Zeeshancloud15/food-delivery.git'
+                git branch: 'main',
+                url: 'https://github.com/Zeeshancloud15/food-delivery.git'
             }
         }
 
@@ -65,10 +66,12 @@ pipeline {
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
+
                     sh '''
                         echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
 
-                        docker tag food-app ${DOCKER_IMAGE}
+                        docker tag ${IMAGE_NAME} ${DOCKER_IMAGE}
+
                         docker push ${DOCKER_IMAGE}
                     '''
                 }
@@ -79,12 +82,13 @@ pipeline {
             steps {
                 sh '''
                     docker stop ${CONTAINER_NAME} || true
+
                     docker rm ${CONTAINER_NAME} || true
 
                     docker run -d \
                     -p 8081:8080 \
                     --name ${CONTAINER_NAME} \
-                    food-app
+                    ${IMAGE_NAME}
                 '''
             }
         }
@@ -92,13 +96,14 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 sshagent(['k8s-ssh1']) {
-                    sh '''
-                        ssh -o StrictHostKeyChecking=no  ${K8S_SERVER}
+
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ${K8S_SERVER} '
                         kubectl apply -f https://raw.githubusercontent.com/Zeeshancloud15/food-delivery/main/deployment.yaml &&
                         kubectl apply -f https://raw.githubusercontent.com/Zeeshancloud15/food-delivery/main/service.yaml &&
                         kubectl rollout restart deployment food-app
-                        "
-                    '''
+                        '
+                    """
                 }
             }
         }

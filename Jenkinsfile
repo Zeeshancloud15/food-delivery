@@ -10,6 +10,9 @@ pipeline {
 
         // Kubernetes Master Server
         K8S_SERVER = 'ubuntu@16.170.213.84'
+
+        // S3 Bucket
+        S3_BUCKET = 'zeeshanagency'
     }
 
     stages {
@@ -73,6 +76,29 @@ pipeline {
                         docker tag ${IMAGE_NAME} ${DOCKER_IMAGE}
 
                         docker push ${DOCKER_IMAGE}
+                    '''
+                }
+            }
+        }
+
+        stage('Upload Backup to S3') {
+            steps {
+
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-id',
+                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                ]]) {
+
+                    sh '''
+                        # Upload JAR File
+                        aws s3 cp target/*.jar s3://${S3_BUCKET}/jar/
+
+                        # Upload Kubernetes Files
+                        aws s3 cp deployment.yaml s3://${S3_BUCKET}/k8s/
+
+                        aws s3 cp service.yaml s3://${S3_BUCKET}/k8s/
                     '''
                 }
             }

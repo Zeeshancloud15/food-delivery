@@ -1,11 +1,17 @@
 pipeline {
+
     agent any
 
     environment {
+
         SONARQUBE = 'sonar-qube'
+
         IMAGE_NAME = 'food-app'
+
         CONTAINER_NAME = 'food-app-container'
+
         DOCKER_HUB_USER = 'zeeshancloud15'
+
         DOCKER_IMAGE = 'zeeshancloud15/food-app:latest'
 
         // Kubernetes Master Server
@@ -18,27 +24,36 @@ pipeline {
     stages {
 
         stage('Checkout Code') {
+
             steps {
+
                 git branch: 'main',
                 url: 'https://github.com/Zeeshancloud15/food-delivery.git'
             }
         }
 
         stage('Build') {
+
             steps {
+
                 sh 'mvn clean compile'
             }
         }
 
         stage('Test') {
+
             steps {
+
                 sh 'mvn test'
             }
         }
 
         stage('SonarQube Analysis') {
+
             steps {
+
                 withSonarQubeEnv('sonar-qube') {
+
                     sh '''
                         mvn sonar:sonar \
                         -Dsonar.projectKey=food-delivery \
@@ -51,24 +66,32 @@ pipeline {
         }
 
         stage('Package') {
+
             steps {
+
                 sh 'mvn clean package -DskipTests'
             }
         }
 
         stage('Docker Build') {
+
             steps {
+
                 sh "docker build -t ${IMAGE_NAME} ."
             }
         }
 
         stage('Docker Login & Push') {
+
             steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub-cred',
-                    usernameVariable: 'DOCKER_USER',
-                    passwordVariable: 'DOCKER_PASS'
-                )]) {
+
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub-cred',
+                        usernameVariable: 'DOCKER_USER',
+                        passwordVariable: 'DOCKER_PASS'
+                    )
+                ]) {
 
                     sh '''
                         echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
@@ -82,6 +105,7 @@ pipeline {
         }
 
         stage('Upload Backup to S3') {
+
             steps {
 
                 withCredentials([[
@@ -95,17 +119,21 @@ pipeline {
                         # Upload JAR File
                         aws s3 cp target/*.jar s3://${S3_BUCKET}/jar/
 
-                        # Upload Kubernetes Files
+                        # Upload Kubernetes YAML Files
                         aws s3 cp deployment.yaml s3://${S3_BUCKET}/k8s/
 
                         aws s3 cp service.yaml s3://${S3_BUCKET}/k8s/
+
+                        aws s3 cp hpa.yaml s3://${S3_BUCKET}/k8s/
                     '''
                 }
             }
         }
 
-        stage('Docker Run (Local Test)') {
+        stage('Docker Run Local Test') {
+
             steps {
+
                 sh '''
                     docker stop ${CONTAINER_NAME} || true
 
@@ -120,14 +148,47 @@ pipeline {
         }
 
         stage('Deploy to Kubernetes') {
+
             steps {
+
                 sshagent(['k8s-ssh1']) {
 
                     sh """
                         ssh -o StrictHostKeyChecking=no ${K8S_SERVER} '
+
                         kubectl apply -f https://raw.githubusercontent.com/Zeeshancloud15/food-delivery/main/deployment.yaml &&
+
                         kubectl apply -f https://raw.githubusercontent.com/Zeeshancloud15/food-delivery/main/service.yaml &&
+
+                        kubectl apply -f https://raw.githubusercontent.com/Zeeshancloud15/food-delivery/main/hpa.yaml &&
+
                         kubectl rollout restart deployment food-app
+                        '
+                    """
+                }
+            }
+        }
+
+        stage('Verify Kubernetes') {
+
+            steps {
+
+                sshagent(['k8s-ssh1']) {
+
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ${K8S_SERVER} '
+
+                        echo "===== PODS ====="
+
+                        kubectl get pods
+
+                        echo "===== SERVICES ====="
+
+                        kubectl get svc
+
+                        echo "===== HPA ====="
+
+                        kubectl get hpa
                         '
                     """
                 }
@@ -136,12 +197,15 @@ pipeline {
     }
 
     post {
+
         success {
-            echo 'SUCCESS 🚀 Full CI/CD + Kubernetes Deployment Done'
+
+            echo 'SUCCESS 🚀 Full CI/CD + Kubernetes + HPA Deployment Done'
         }
 
         failure {
-            echo 'FAILED ❌ Check logs'
+
+            echo 'FAILED ❌ Check Jenkins Logs'
         }
     }
 }

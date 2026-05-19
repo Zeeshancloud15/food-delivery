@@ -15,7 +15,7 @@ pipeline {
         DOCKER_IMAGE = 'zeeshancloud15/food-app:latest'
 
         // Kubernetes Master Server
-        K8S_SERVER = 'ubuntu@16.16.172.23'
+        K8S_SERVER = 'ubuntu@13.48.123.148'
 
         // S3 Bucket
         S3_BUCKET = 'zeeshanagency'
@@ -116,10 +116,8 @@ pipeline {
                 ]]) {
 
                     sh '''
-                        # Upload JAR File
                         aws s3 cp target/*.jar s3://${S3_BUCKET}/jar/
 
-                        # Upload Kubernetes YAML Files
                         aws s3 cp deployment.yaml s3://${S3_BUCKET}/k8s/
 
                         aws s3 cp service.yaml s3://${S3_BUCKET}/k8s/
@@ -169,6 +167,40 @@ pipeline {
             }
         }
 
+        stage('Monitoring Verification') {
+
+            steps {
+
+                sshagent(['k8s-ssh1']) {
+
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ${K8S_SERVER} '
+
+                        echo "===== NODES ====="
+
+                        kubectl get nodes
+
+                        echo "===== PODS ====="
+
+                        kubectl get pods -o wide
+
+                        echo "===== DEPLOYMENTS ====="
+
+                        kubectl get deployment
+
+                        echo "===== SERVICES ====="
+
+                        kubectl get svc
+
+                        echo "===== HPA ====="
+
+                        kubectl get hpa
+                        '
+                    """
+                }
+            }
+        }
+
         stage('Verify Kubernetes') {
 
             steps {
@@ -200,7 +232,7 @@ pipeline {
 
         success {
 
-            echo 'SUCCESS 🚀 Full CI/CD + Kubernetes + HPA Deployment Done'
+            echo 'SUCCESS 🚀 Full CI/CD + Kubernetes + Monitoring Deployment Done'
         }
 
         failure {

@@ -14,7 +14,7 @@ pipeline {
 
         DOCKER_IMAGE = 'zeeshancloud15/food-app:latest'
 
-        // Kubernetes Master Server
+        // Kubernetes Server
         K8S_SERVER = 'ubuntu@16.16.156.63'
 
         // S3 Bucket
@@ -77,7 +77,9 @@ pipeline {
 
             steps {
 
-                sh "docker build -t ${IMAGE_NAME} ."
+                sh '''
+                    docker build -t ${DOCKER_IMAGE} .
+                '''
             }
         }
 
@@ -95,8 +97,6 @@ pipeline {
 
                     sh '''
                         echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-
-                        docker tag ${IMAGE_NAME} ${DOCKER_IMAGE}
 
                         docker push ${DOCKER_IMAGE}
                     '''
@@ -123,6 +123,8 @@ pipeline {
                         aws s3 cp service.yaml s3://${S3_BUCKET}/k8s/
 
                         aws s3 cp hpa.yaml s3://${S3_BUCKET}/k8s/
+
+                        aws s3 cp ingress.yaml s3://${S3_BUCKET}/k8s/
                     '''
                 }
             }
@@ -140,7 +142,7 @@ pipeline {
                     docker run -d \
                     -p 8081:8080 \
                     --name ${CONTAINER_NAME} \
-                    ${IMAGE_NAME}
+                    ${DOCKER_IMAGE}
                 '''
             }
         }
@@ -160,7 +162,7 @@ pipeline {
 
                         kubectl apply -f https://raw.githubusercontent.com/Zeeshancloud15/food-delivery/main/hpa.yaml &&
 
-                         kubectl apply -f https://raw.githubusercontent.com/Zeeshancloud15/food-delivery/main/ingress.yaml &&
+                        kubectl apply -f https://raw.githubusercontent.com/Zeeshancloud15/food-delivery/main/ingress.yaml &&
 
                         kubectl rollout restart deployment food-app
                         '
@@ -197,6 +199,10 @@ pipeline {
                         echo "===== HPA ====="
 
                         kubectl get hpa
+
+                        echo "===== INGRESS ====="
+
+                        kubectl get ingress
                         '
                     """
                 }
@@ -223,6 +229,10 @@ pipeline {
                         echo "===== HPA ====="
 
                         kubectl get hpa
+
+                        echo "===== INGRESS ====="
+
+                        kubectl get ingress
                         '
                     """
                 }
@@ -234,12 +244,17 @@ pipeline {
 
         success {
 
-            echo 'SUCCESS 🚀 Full CI/CD + Kubernetes + Monitoring Deployment Done'
+            echo 'SUCCESS 🚀 Full CI/CD + Docker + S3 + Kubernetes + Ingress + Monitoring Deployment Done'
         }
 
         failure {
 
             echo 'FAILED ❌ Check Jenkins Logs'
+        }
+
+        always {
+
+            cleanWs()
         }
     }
 }

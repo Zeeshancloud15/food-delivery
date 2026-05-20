@@ -1,7 +1,12 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: food-app-ingress
 spec:
   ingressClassName: nginx
   rules:
-  - http:
+  - host: zeeshan.agency
+    http:
       paths:
       - path: /
         pathType: Prefix

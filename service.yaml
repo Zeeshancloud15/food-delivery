@@ -5,7 +5,8 @@ metadata:
 spec:
   selector:
     app: food-app
+  type: NodePort
   ports:
     - port: 80
       targetPort: 8080
-  type: ClusterIP
+      nodePort: 31047

@@ -1,15 +1,11 @@
 apiVersion: v1
 kind: Service
-
 metadata:
   name: food-app-service
-
 spec:
-  type: LoadBalancer
-
   selector:
     app: food-app
-
   ports:
     - port: 80
       targetPort: 8080
+  type: ClusterIP

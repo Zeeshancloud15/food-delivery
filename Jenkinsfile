@@ -15,7 +15,7 @@ pipeline {
         DOCKER_IMAGE = 'zeeshancloud15/food-app:latest'
 
         // Kubernetes Master Server
-        K8S_SERVER = 'ubuntu@13.48.123.148'
+        K8S_SERVER = 'ubuntu@16.16.156.63'
 
         // S3 Bucket
         S3_BUCKET = 'zeeshanagency'
@@ -159,6 +159,8 @@ pipeline {
                         kubectl apply -f https://raw.githubusercontent.com/Zeeshancloud15/food-delivery/main/service.yaml &&
 
                         kubectl apply -f https://raw.githubusercontent.com/Zeeshancloud15/food-delivery/main/hpa.yaml &&
+
+                         kubectl apply -f https://raw.githubusercontent.com/Zeeshancloud15/food-delivery/main/ingress.yaml &&
 
                         kubectl rollout restart deployment food-app
                         '

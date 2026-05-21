@@ -15,7 +15,7 @@ pipeline {
         DOCKER_IMAGE = 'zeeshancloud15/food-app:latest'
 
         // Kubernetes Server
-        K8S_SERVER = 'ubuntu@16.16.156.63'
+        K8S_SERVER = 'ubuntu@13.49.183.246'
 
         // S3 Bucket
         S3_BUCKET = 'zeeshanagency'

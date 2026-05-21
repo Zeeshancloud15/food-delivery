@@ -123,8 +123,6 @@ pipeline {
                         aws s3 cp service.yaml s3://${S3_BUCKET}/k8s/
 
                         aws s3 cp hpa.yaml s3://${S3_BUCKET}/k8s/
-
-                        aws s3 cp ingress.yaml s3://${S3_BUCKET}/k8s/
                     '''
                 }
             }
@@ -162,10 +160,6 @@ pipeline {
 
                         kubectl apply -f https://raw.githubusercontent.com/Zeeshancloud15/food-delivery/main/hpa.yaml &&
 
-                        kubectl apply -f https://raw.githubusercontent.com/Zeeshancloud15/food-delivery/main/metalb.yaml &&
-
-
-
                         kubectl rollout restart deployment food-app
                         '
                     """
@@ -201,10 +195,6 @@ pipeline {
                         echo "===== HPA ====="
 
                         kubectl get hpa
-
-                        echo "===== INGRESS ====="
-
-                        kubectl get ingress
                         '
                     """
                 }
@@ -231,10 +221,6 @@ pipeline {
                         echo "===== HPA ====="
 
                         kubectl get hpa
-
-                        echo "===== INGRESS ====="
-
-                        kubectl get ingress
                         '
                     """
                 }
@@ -246,7 +232,7 @@ pipeline {
 
         success {
 
-            echo 'SUCCESS 🚀 Full CI/CD + Docker + S3 + Kubernetes + Ingress + Monitoring Deployment Done'
+            echo 'SUCCESS 🚀 Full CI/CD + Docker + S3 + Kubernetes + ELB Deployment Done'
         }
 
         failure {

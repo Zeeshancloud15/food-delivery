@@ -162,7 +162,6 @@ pipeline {
 
                         kubectl apply -f https://raw.githubusercontent.com/Zeeshancloud15/food-delivery/main/hpa.yaml &&
 
-                        kubectl apply -f https://raw.githubusercontent.com/Zeeshancloud15/food-delivery/main/ingress.yaml &&
 
                         kubectl rollout restart deployment food-app
                         '

@@ -2,18 +2,31 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: food-app
+
 spec:
-  replicas: 2
+  replicas: 1
+
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+
   selector:
     matchLabels:
       app: food-app
+
   template:
     metadata:
       labels:
         app: food-app
+
     spec:
       containers:
       - name: food-app
-        image: nginx
+        image: zeeshancloud15/food-app:latest
+
+        imagePullPolicy: Always
+
         ports:
         - containerPort: 80

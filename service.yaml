@@ -2,11 +2,15 @@ apiVersion: v1
 kind: Service
 metadata:
   name: food-app-service
+
 spec:
-  type: LoadBalancer
+  type: NodePort
+
   selector:
     app: food-app
+
   ports:
   - protocol: TCP
     port: 80
-    targetPort: 80
+    targetPort: 8080
+    nodePort: 30080

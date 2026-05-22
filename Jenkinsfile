@@ -12,9 +12,11 @@ pipeline {
 
         DOCKER_HUB_USER = 'zeeshancloud15'
 
-        DOCKER_IMAGE = 'zeeshancloud15/food-app:latest'
+        BUILD_NUMBER_TAG = "${BUILD_NUMBER}"
 
-        // Kubernetes Server
+        DOCKER_IMAGE = "zeeshancloud15/food-app:${BUILD_NUMBER_TAG}"
+
+        // Kubernetes Master Server
         K8S_SERVER = 'ubuntu@16.171.69.27'
 
         // S3 Bucket
@@ -145,6 +147,16 @@ pipeline {
             }
         }
 
+        stage('Update Kubernetes Deployment File') {
+
+            steps {
+
+                sh """
+                    sed -i 's|image:.*|image: ${DOCKER_IMAGE}|g' deployment.yaml
+                """
+            }
+        }
+
         stage('Deploy to Kubernetes') {
 
             steps {
@@ -152,15 +164,21 @@ pipeline {
                 sshagent(['k8s-ssh1']) {
 
                     sh """
+                        scp -o StrictHostKeyChecking=no deployment.yaml ${K8S_SERVER}:~/
+
+                        scp -o StrictHostKeyChecking=no service.yaml ${K8S_SERVER}:~/
+
+                        scp -o StrictHostKeyChecking=no hpa.yaml ${K8S_SERVER}:~/
+
                         ssh -o StrictHostKeyChecking=no ${K8S_SERVER} '
 
-                        kubectl apply -f https://raw.githubusercontent.com/Zeeshancloud15/food-delivery/main/deployment.yaml &&
+                        kubectl apply -f deployment.yaml &&
 
-                        kubectl apply -f https://raw.githubusercontent.com/Zeeshancloud15/food-delivery/main/service.yaml &&
+                        kubectl apply -f service.yaml &&
 
-                        kubectl apply -f https://raw.githubusercontent.com/Zeeshancloud15/food-delivery/main/hpa.yaml &&
+                        kubectl apply -f hpa.yaml &&
 
-                        kubectl rollout restart deployment food-app
+                        kubectl rollout status deployment/food-app
                         '
                     """
                 }
@@ -195,6 +213,10 @@ pipeline {
                         echo "===== HPA ====="
 
                         kubectl get hpa
+
+                        echo "===== ROLLOUT HISTORY ====="
+
+                        kubectl rollout history deployment/food-app
                         '
                     """
                 }
@@ -232,7 +254,7 @@ pipeline {
 
         success {
 
-            echo 'SUCCESS 🚀 Full CI/CD + Docker + S3 + Kubernetes + ELB Deployment Done'
+            echo 'SUCCESS 🚀 Full CI/CD + Docker + S3 + Kubernetes + Rolling Deployment Done'
         }
 
         failure {

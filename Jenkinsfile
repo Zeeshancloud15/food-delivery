@@ -170,6 +170,8 @@ pipeline {
 
                         scp -o StrictHostKeyChecking=no hpa.yaml ${K8S_SERVER}:~/
 
+                        scp -o StrictHostKeyChecking=no ingress.yaml ${K8S_SERVER}:~/
+
                         ssh -o StrictHostKeyChecking=no ${K8S_SERVER} '
 
                         kubectl apply -f deployment.yaml &&
@@ -177,6 +179,8 @@ pipeline {
                         kubectl apply -f service.yaml &&
 
                         kubectl apply -f hpa.yaml &&
+
+                        kubectl apply -f ingress.yaml &&
 
                         kubectl rollout status deployment/food-app
                         '

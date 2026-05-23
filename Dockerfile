@@ -2,8 +2,8 @@ FROM eclipse-temurin:21-jdk
 
 WORKDIR /app
 
-COPY target/java-maven-app-1.0.jar app.jar
+COPY target/*.jar app.jar
 
-EXPOSE 5000
+EXPOSE 8080
 
 CMD ["java", "-jar", "app.jar"]

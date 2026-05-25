@@ -6,15 +6,15 @@ pipeline {
 
         SONARQUBE = 'sonar-qube'
 
-        IMAGE_NAME = 'food-app'
+        IMAGE_NAME = 'tech-app'
 
-        CONTAINER_NAME = 'food-app-container'
+        CONTAINER_NAME = 'tech-app-container'
 
         DOCKER_HUB_USER = 'zeeshancloud15'
 
         BUILD_NUMBER_TAG = "${BUILD_NUMBER}"
 
-        DOCKER_IMAGE = "zeeshancloud15/food-app:${BUILD_NUMBER_TAG}"
+        DOCKER_IMAGE = "zeeshancloud15/tech-app:${BUILD_NUMBER_TAG}"
 
         // Kubernetes Master Server
         K8S_SERVER = 'ubuntu@16.16.170.72'

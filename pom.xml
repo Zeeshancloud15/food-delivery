@@ -1,148 +1,44 @@
-package com.example.demo;
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+    <modelVersion>4.0.0</modelVersion>
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
+    <groupId>com.example</groupId>
+    <artifactId>demo</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
 
-@RestController
-public class HomeController {
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.2.0</version>
+    </parent>
 
-    String url = "jdbc:mysql://foodapp.cxeakiucmdfw.eu-north-1.rds.amazonaws.com:3306/zeedata";
-    String dbUser = "admin";
-    String dbPass = "foodapp123";
+    <properties>
+        <java.version>17</java.version>
+    </properties>
 
-    // 🌐 HOME PAGE (AI + CLOUD WEBSITE)
-    @GetMapping("/")
-    public String home() {
+    <dependencies>
 
-        return "<html>" +
-                "<head>" +
-                "<title>AI Cloud Tech</title>" +
-                "<style>" +
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
 
-                "body{margin:0;font-family:Arial;background:#0f172a;color:white;}" +
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+        </dependency>
 
-                ".navbar{background:#111827;padding:20px;text-align:center;font-size:28px;font-weight:bold;}" +
+    </dependencies>
 
-                ".hero{padding:70px;text-align:center;background:linear-gradient(90deg,#2563eb,#7c3aed);}" +
-                ".hero h1{font-size:50px;}" +
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
-                ".section{padding:40px;text-align:center;}" +
-
-                ".card{background:#1f2937;padding:20px;margin:15px;display:inline-block;width:250px;border-radius:15px;}" +
-
-                ".form-box{background:#111827;width:400px;margin:auto;padding:30px;border-radius:15px;}" +
-
-                "input{width:90%;padding:12px;margin:10px;border-radius:10px;border:none;}" +
-
-                "button{background:#2563eb;color:white;padding:12px 25px;border:none;border-radius:10px;cursor:pointer;}" +
-
-                ".footer{background:#111;text-align:center;padding:20px;margin-top:30px;}" +
-
-                "</style>" +
-                "</head>" +
-
-                "<body>" +
-
-                // NAVBAR
-                "<div class='navbar'>AI Cloud Tech Solutions</div>" +
-
-                // HERO
-                "<div class='hero'>" +
-                "<h1>AI • Cloud • DevOps Automation</h1>" +
-                "<p>Future of Intelligent Cloud Systems</p>" +
-                "</div>" +
-
-                // 🤖 AI IMAGES SECTION
-                "<div class='section'>" +
-                "<h2>AI Images Gallery</h2>" +
-                "<div class='card'>AI Data Center</div>" +
-                "<div class='card'>Cloud Infrastructure</div>" +
-                "<div class='card'>DevOps Pipeline</div>" +
-                "</div>" +
-
-                // 👤 YOUR DETAILS
-                "<div class='section'>" +
-                "<h2>About Me</h2>" +
-                "<p>Name: Mohd Zeeshan Uddin</p>" +
-                "<p>Email: zeeshancloud15@gmail.com</p>" +
-                "<p>Phone: 7780369370</p>" +
-                "</div>" +
-
-                // 🧠 SERVICES
-                "<div class='section'>" +
-                "<h2>Our Services</h2>" +
-                "<div class='card'>AWS Cloud Setup</div>" +
-                "<div class='card'>DevOps CI/CD</div>" +
-                "<div class='card'>AI Automation</div>" +
-                "</div>" +
-
-                // 🛒 PRODUCTS
-                "<div class='section'>" +
-                "<h2>Our Products</h2>" +
-                "<div class='card'>Smart Cloud Dashboard</div>" +
-                "<div class='card'>AI Chatbot System</div>" +
-                "<div class='card'>Kubernetes Platform</div>" +
-                "</div>" +
-
-                // 📩 CLIENT FORM
-                "<div class='section'>" +
-                "<div class='form-box'>" +
-                "<h2>Client Contact Form</h2>" +
-                "<form action='/save-client' method='post'>" +
-
-                "<input type='text' name='name' placeholder='Enter Name' required>" +
-                "<input type='email' name='email' placeholder='Enter Email' required>" +
-                "<input type='text' name='phone' placeholder='Enter Phone' required>" +
-
-                "<button type='submit'>Submit</button>" +
-
-                "</form>" +
-                "</div>" +
-                "</div>" +
-
-                // FOOTER
-                "<div class='footer'>" +
-                "© 2026 AI Cloud Tech | Zeeshan Uddin" +
-                "</div>" +
-
-                "</body>" +
-                "</html>";
-    }
-
-    // 💾 SAVE CLIENT DATA
-    @PostMapping("/save-client")
-    public String saveClient(
-            @RequestParam String name,
-            @RequestParam String email,
-            @RequestParam String phone) {
-
-        try {
-            Connection con = DriverManager.getConnection(url, dbUser, dbPass);
-
-            String sql = "INSERT INTO zeetable(name,email,phone) VALUES(?,?,?)";
-
-            PreparedStatement ps = con.prepareStatement(sql);
-
-            ps.setString(1, name);
-            ps.setString(2, email);
-            ps.setString(3, phone);
-
-            ps.executeUpdate();
-
-            con.close();
-
-            return "<h1 style='color:green;text-align:center;margin-top:100px;'>Client Saved Successfully 🚀</h1>" +
-                   "<div style='text-align:center;'><a href='/'>Back Home</a></div>";
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "<h1>Error: " + e.getMessage() + "</h1>";
-        }
-    }
-}
+</project>

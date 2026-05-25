@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HomeController {
 
     String url =
-        "jdbc:mysql://foodapp.cxeakiucmdfw.eu-north-1.rds.amazonaws.com:3306/foodapp";
+        "jdbc:mysql://foodapp.cxeakiucmdfw.eu-north-1.rds.amazonaws.com:3306/techapp";
 
     String username = "admin";
 

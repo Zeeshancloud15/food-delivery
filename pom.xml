@@ -12,27 +12,51 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <parent>
+
         <groupId>org.springframework.boot</groupId>
 
         <artifactId>spring-boot-starter-parent</artifactId>
 
         <version>3.2.5</version>
+
     </parent>
+
+    <properties>
+
+        <java.version>17</java.version>
+
+    </properties>
 
     <dependencies>
 
+        <!-- Spring Boot Web -->
+
         <dependency>
+
             <groupId>org.springframework.boot</groupId>
 
             <artifactId>spring-boot-starter-web</artifactId>
+
         </dependency>
 
+        <!-- MySQL -->
+
         <dependency>
-            <groupId>mysql</groupId>
 
-            <artifactId>mysql-connector-java</artifactId>
+            <groupId>com.mysql</groupId>
 
-            <version>8.0.33</version>
+            <artifactId>mysql-connector-j</artifactId>
+
+        </dependency>
+
+        <!-- Password Encryption -->
+
+        <dependency>
+
+            <groupId>org.springframework.security</groupId>
+
+            <artifactId>spring-security-crypto</artifactId>
+
         </dependency>
 
     </dependencies>
@@ -42,9 +66,11 @@
         <plugins>
 
             <plugin>
+
                 <groupId>org.springframework.boot</groupId>
 
                 <artifactId>spring-boot-maven-plugin</artifactId>
+
             </plugin>
 
         </plugins>

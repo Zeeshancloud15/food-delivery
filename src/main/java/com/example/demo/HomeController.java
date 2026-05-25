@@ -11,7 +11,7 @@ public class HomeController {
 
     // IMPORTANT: AWS RDS FIX
     String url =
-    "jdbc:mysql://foodapp.cxeakiucmdfw.eu-north-1.rds.amazonaws.com:3306/techapp";
+    "jdbc:mysql://foodapp.cxeakiucmdfw.eu-north-1.rds.amazonaws.com:3306/foodapp";
 
     String dbUser = "admin";
     String dbPass = "foodapp123";

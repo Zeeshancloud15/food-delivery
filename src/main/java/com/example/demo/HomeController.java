@@ -13,7 +13,7 @@ public class HomeController {
     String dbUser = "admin";
     String dbPass = "foodapp123";
 
-    // HOME WEBSITE
+    // HOME PAGE
     @GetMapping("/")
     public String home() {
         return """
@@ -40,30 +40,28 @@ public class HomeController {
         """;
     }
 
-    // SAVE TO RDS
+    // SAVE CLIENT TO RDS
     @PostMapping("/save")
     public String save(
             @RequestParam String name,
             @RequestParam String email,
             @RequestParam String phone) {
 
-        try {
-            Connection con = DriverManager.getConnection(url, dbUser, dbPass);
+        String sql = "INSERT INTO clients(name,email,phone) VALUES(?,?,?)";
 
-            String sql = "INSERT INTO zeetable(name,email,phone) VALUES(?,?,?)";
-            PreparedStatement ps = con.prepareStatement(sql);
+        try (Connection con = DriverManager.getConnection(url, dbUser, dbPass);
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, name);
             ps.setString(2, email);
             ps.setString(3, phone);
 
             ps.executeUpdate();
-            con.close();
 
-            return "Data Saved Successfully in RDS ✅";
+            return "✅ Client Saved Successfully in RDS";
 
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return "❌ Error: " + e.getMessage();
         }
     }
 }

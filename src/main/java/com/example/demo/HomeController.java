@@ -1,20 +1,25 @@
 package com.example.demo;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class HomeController {
 
     String url = "jdbc:mysql://foodapp.cxeakiucmdfw.eu-north-1.rds.amazonaws.com:3306/foodapp";
-
     String dbUser = "admin";
-
     String dbPass = "foodapp123";
 
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -26,61 +31,108 @@ public class HomeController {
     @GetMapping("/")
     public String loginPage() {
 
-        return "<html>" +
+        return """
+        <html>
+        <head>
+        <title>ZeeshanCloudTech Food Delivery</title>
 
-                "<head>" +
+        <style>
 
-                "<title>Food Delivery</title>" +
+        body{
+            font-family:Arial;
+            margin:0;
+            background:#f5f5f5;
+        }
 
-                "<style>" +
+        .navbar{
+            background:#ff3d00;
+            color:white;
+            padding:20px;
+            text-align:center;
+            font-size:30px;
+            font-weight:bold;
+        }
 
-                "body{font-family:Arial;background:#f5f5f5;margin:0;padding:0;}" +
+        .container{
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:85vh;
+        }
 
-                ".navbar{background:#ff5722;color:white;padding:20px;font-size:28px;font-weight:bold;text-align:center;}" +
+        .box{
+            background:white;
+            padding:40px;
+            width:350px;
+            border-radius:20px;
+            text-align:center;
+            box-shadow:0px 0px 15px rgba(0,0,0,0.2);
+        }
 
-                ".container{display:flex;justify-content:center;align-items:center;height:90vh;}" +
+        input{
+            width:90%;
+            padding:12px;
+            margin:10px;
+            border-radius:10px;
+            border:1px solid #ccc;
+        }
 
-                ".box{background:white;padding:40px;border-radius:20px;width:350px;text-align:center;box-shadow:0px 0px 15px rgba(0,0,0,0.2);}" +
+        button{
+            width:95%;
+            padding:12px;
+            background:#ff3d00;
+            color:white;
+            border:none;
+            border-radius:10px;
+            font-size:18px;
+            cursor:pointer;
+        }
 
-                "input{width:90%;padding:12px;margin:10px;border-radius:10px;border:1px solid #ccc;}" +
+        a{
+            text-decoration:none;
+            color:#ff3d00;
+            font-weight:bold;
+        }
 
-                "button{background:#ff5722;color:white;padding:12px;border:none;border-radius:10px;width:95%;font-size:18px;cursor:pointer;}" +
+        </style>
+        </head>
 
-                "a{text-decoration:none;color:#ff5722;font-weight:bold;}" +
+        <body>
 
-                "</style>" +
+        <div class='navbar'>
+        ZeeshanCloudTech Food Delivery
+        </div>
 
-                "</head>" +
+        <div class='container'>
 
-                "<body>" +
+        <div class='box'>
 
-                "<div class='navbar'>Food Delivery App</div>" +
+        <h2>Login With OTP</h2>
 
-                "<div class='container'>" +
+        <form action='/send-otp' method='post'>
 
-                "<div class='box'>" +
+        <input type='email' name='email' placeholder='Enter Email' required>
 
-                "<h2>Login With OTP</h2>" +
+        <button type='submit'>Send OTP</button>
 
-                "<form action='/send-otp' method='post'>" +
+        </form>
 
-                "<input type='email' name='email' placeholder='Enter Email' required/>" +
+        <br>
 
-                "<button type='submit'>Send OTP</button>" +
+        <a href='/signup'>Create Account</a>
 
-                "</form>" +
+        <br><br>
 
-                "<br>" +
+        <h4>📞 7780369370</h4>
+        <h4>📧 zeeshancloud15@gmail.com</h4>
 
-                "<a href='/signup'>Create Account</a>" +
+        </div>
 
-                "</div>" +
+        </div>
 
-                "</div>" +
-
-                "</body>" +
-
-                "</html>";
+        </body>
+        </html>
+        """;
     }
 
     // ================= SIGNUP PAGE =================
@@ -88,60 +140,87 @@ public class HomeController {
     @GetMapping("/signup")
     public String signupPage() {
 
-        return "<html>" +
+        return """
+        <html>
+        <head>
 
-                "<head>" +
+        <title>Signup</title>
 
-                "<title>Signup</title>" +
+        <style>
 
-                "<style>" +
+        body{
+            font-family:Arial;
+            background:linear-gradient(to right,#ff512f,#dd2476);
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+            margin:0;
+        }
 
-                "body{font-family:Arial;background:linear-gradient(to right,#fc466b,#3f5efb);display:flex;justify-content:center;align-items:center;height:100vh;margin:0;}" +
+        .box{
+            background:white;
+            padding:40px;
+            border-radius:20px;
+            width:350px;
+            text-align:center;
+        }
 
-                ".box{background:white;padding:40px;border-radius:20px;width:350px;text-align:center;box-shadow:0px 0px 20px rgba(0,0,0,0.3);}" +
+        input{
+            width:90%;
+            padding:12px;
+            margin:10px;
+            border-radius:10px;
+            border:1px solid #ccc;
+        }
 
-                "input{width:90%;padding:12px;margin:10px;border-radius:10px;border:1px solid #ccc;}" +
+        button{
+            width:95%;
+            padding:12px;
+            background:#ff3d00;
+            color:white;
+            border:none;
+            border-radius:10px;
+            font-size:18px;
+        }
 
-                "button{background:#3f5efb;color:white;padding:12px;border:none;border-radius:10px;width:95%;font-size:18px;}" +
+        </style>
 
-                "</style>" +
+        </head>
 
-                "</head>" +
+        <body>
 
-                "<body>" +
+        <div class='box'>
 
-                "<div class='box'>" +
+        <h1>Create Account</h1>
 
-                "<h1>Create Account</h1>" +
+        <form action='/register' method='post'>
 
-                "<form action='/register' method='post'>" +
+        <input type='text' name='username' placeholder='Username' required>
 
-                "<input type='text' name='username' placeholder='Username' required/>" +
+        <input type='email' name='email' placeholder='Email' required>
 
-                "<input type='email' name='email' placeholder='Email' required/>" +
+        <input type='password' name='password' placeholder='Password' required>
 
-                "<input type='password' name='password' placeholder='Password' required/>" +
+        <input type='text' name='mobile' placeholder='Mobile Number' required>
 
-                "<input type='text' name='mobile' placeholder='Mobile Number' required/>" +
+        <input type='text' name='address' placeholder='Address' required>
 
-                "<input type='text' name='address' placeholder='Address' required/>" +
+        <button type='submit'>Signup</button>
 
-                "<button type='submit'>Signup</button>" +
+        </form>
 
-                "</form>" +
+        </div>
 
-                "</div>" +
-
-                "</body>" +
-
-                "</html>";
+        </body>
+        </html>
+        """;
     }
 
     // ================= REGISTER =================
 
     @PostMapping("/register")
     public String register(
-
             @RequestParam String username,
             @RequestParam String email,
             @RequestParam String password,
@@ -168,13 +247,19 @@ public class HomeController {
 
             con.close();
 
-            return "<h1 style='color:green;text-align:center;margin-top:100px;'>User Registered Successfully</h1>" +
+            return """
+            <h1 style='color:green;text-align:center;margin-top:100px;'>
+            User Registered Successfully
+            </h1>
 
-                    "<center><a href='/'>Go To Login</a></center>";
+            <center>
+            <a href='/'>Go To Login</a>
+            </center>
+            """;
 
         } catch (Exception e) {
 
-            return "<h1>Database Error</h1>";
+            return "<h1>Database Error : " + e.getMessage() + "</h1>";
         }
     }
 
@@ -183,49 +268,54 @@ public class HomeController {
     @PostMapping("/send-otp")
     public String sendOtp(@RequestParam String email) {
 
-        try {
+        Random random = new Random();
 
-            Random random = new Random();
+        String otp = String.valueOf(1000 + random.nextInt(9000));
 
-            String otp = String.valueOf(1000 + random.nextInt(9000));
+        otpStore.put(email, otp);
 
-            otpStore.put(email, otp);
+        return """
+        <html>
 
-            return "<html>" +
+        <body style='font-family:Arial;text-align:center;padding-top:100px;'>
 
-                    "<body style='font-family:Arial;text-align:center;padding-top:100px;'>" +
+        <h1>OTP Sent Successfully</h1>
 
-                    "<h1>OTP Sent Successfully</h1>" +
+        <h2>Your OTP : """ + otp + """
 
-                    "<h2>Your OTP : " + otp + "</h2>" +
+        </h2>
 
-                    "<form action='/verify-otp' method='post'>" +
+        <form action='/verify-otp' method='post'>
 
-                    "<input type='hidden' name='email' value='" + email + "'/>" +
+        <input type='hidden' name='email' value='""" + email + """'>
 
-                    "<input type='text' name='otp' placeholder='Enter OTP' required style='padding:10px;width:250px;'/>" +
+        <input type='text' name='otp' placeholder='Enter OTP'
+        style='padding:10px;width:250px;' required>
 
-                    "<br><br>" +
+        <br><br>
 
-                    "<button style='padding:10px 20px;background:#ff5722;color:white;border:none;border-radius:10px;'>Verify OTP</button>" +
+        <button style='padding:10px 20px;
+        background:#ff3d00;
+        color:white;
+        border:none;
+        border-radius:10px;'>
 
-                    "</form>" +
+        Verify OTP
 
-                    "</body>" +
+        </button>
 
-                    "</html>";
+        </form>
 
-        } catch (Exception e) {
+        </body>
 
-            return "OTP Error";
-        }
+        </html>
+        """;
     }
 
     // ================= VERIFY OTP =================
 
     @PostMapping("/verify-otp")
     public String verifyOtp(
-
             @RequestParam String email,
             @RequestParam String otp) {
 
@@ -247,10 +337,7 @@ public class HomeController {
 
                     int userId = rs.getInt("id");
 
-                    return homePage(
-                            rs.getString("username"),
-                            userId
-                    );
+                    return homePage(rs.getString("username"), userId);
                 }
             }
 
@@ -258,7 +345,7 @@ public class HomeController {
 
         } catch (Exception e) {
 
-            return "<h1>OTP Verification Failed</h1>";
+            return "<h1>Login Error : " + e.getMessage() + "</h1>";
         }
     }
 
@@ -266,110 +353,161 @@ public class HomeController {
 
     public String homePage(String username, int userId) {
 
-        return "<html>" +
+        return """
+        <html>
 
-                "<head>" +
+        <head>
 
-                "<title>Food App</title>" +
+        <title>Zeeshan Food App</title>
 
-                "<style>" +
+        <style>
 
-                "body{font-family:Arial;margin:0;background:#f5f5f5;}" +
+        body{
+            font-family:Arial;
+            margin:0;
+            background:#f5f5f5;
+        }
 
-                ".navbar{background:#ff3d00;color:white;padding:20px;font-size:28px;font-weight:bold;display:flex;justify-content:space-between;}" +
+        .navbar{
+            background:#ff3d00;
+            color:white;
+            padding:20px;
+            display:flex;
+            justify-content:space-between;
+            font-size:24px;
+        }
 
-                ".container{padding:30px;}" +
+        .container{
+            padding:20px;
+        }
 
-                ".card{background:white;width:250px;border-radius:15px;display:inline-block;margin:15px;overflow:hidden;box-shadow:0px 0px 10px rgba(0,0,0,0.2);}" +
+        .card{
+            background:white;
+            width:260px;
+            display:inline-block;
+            margin:15px;
+            border-radius:15px;
+            overflow:hidden;
+            box-shadow:0px 0px 10px rgba(0,0,0,0.2);
+        }
 
-                ".card img{width:100%;height:180px;}" +
+        .card img{
+            width:100%;
+            height:180px;
+        }
 
-                ".card h2{text-align:center;}" +
+        .card h2{
+            text-align:center;
+        }
 
-                ".price{text-align:center;color:green;font-size:20px;font-weight:bold;}" +
+        .price{
+            text-align:center;
+            color:green;
+            font-size:22px;
+            font-weight:bold;
+        }
 
-                ".btn{display:block;background:#ff3d00;color:white;text-align:center;padding:10px;text-decoration:none;}" +
+        .btn{
+            display:block;
+            background:#ff3d00;
+            color:white;
+            text-align:center;
+            padding:12px;
+            text-decoration:none;
+        }
 
-                "</style>" +
+        </style>
 
-                "</head>" +
+        </head>
 
-                "<body>" +
+        <body>
 
-                "<div class='navbar'>" +
+        <div class='navbar'>
 
-                "<span>Welcome " + username + "</span>" +
+        <span>Welcome """ + username + """</span>
 
-                "<span><a href='/profile/" + userId + "' style='color:white;'>Profile</a></span>" +
+        <span>
 
-                "</div>" +
+        <a href='/cart/""" + userId + """'
+        style='color:white;text-decoration:none;'>Cart</a>
 
-                "<div class='container'>" +
+        |
 
-                // Pizza
-                "<div class='card'>" +
+        <a href='/profile/""" + userId + """'
+        style='color:white;text-decoration:none;'>Profile</a>
 
-                "<img src='https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600'>" +
+        </span>
 
-                "<h2>Pizza</h2>" +
+        </div>
 
-                "<div class='price'>₹299</div>" +
+        <div class='container'>
 
-                "<a class='btn' href='/add-cart?userId=" + userId + "&food=Pizza&price=299'>Add To Cart</a>" +
+        """ +
 
-                "</div>" +
+        foodCard(userId,
+                "Pizza",
+                299,
+                "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600")
 
-                // Burger
-                "<div class='card'>" +
+        +
 
-                "<img src='https://images.unsplash.com/photo-1550547660-d9450f859349?w=600'>" +
+        foodCard(userId,
+                "Burger",
+                199,
+                "https://images.unsplash.com/photo-1550547660-d9450f859349?w=600")
 
-                "<h2>Burger</h2>" +
+        +
 
-                "<div class='price'>₹199</div>" +
+        foodCard(userId,
+                "Biryani",
+                349,
+                "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=600")
 
-                "<a class='btn' href='/add-cart?userId=" + userId + "&food=Burger&price=199'>Add To Cart</a>" +
+        +
 
-                "</div>" +
+        foodCard(userId,
+                "Pasta",
+                249,
+                "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=600")
 
-                // Biryani
-                "<div class='card'>" +
+        +
 
-                "<img src='https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=600'>" +
+        """
 
-                "<h2>Biryani</h2>" +
+        </div>
 
-                "<div class='price'>₹349</div>" +
+        </body>
 
-                "<a class='btn' href='/add-cart?userId=" + userId + "&food=Biryani&price=349'>Add To Cart</a>" +
+        </html>
+        """;
+    }
 
-                "</div>" +
+    // ================= FOOD CARD =================
 
-                // Pasta
-                "<div class='card'>" +
+    public String foodCard(int userId, String food, int price, String image) {
 
-                "<img src='https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=600'>" +
+        return """
+        <div class='card'>
 
-                "<h2>Pasta</h2>" +
+        <img src='""" + image + """'>
 
-                "<div class='price'>₹249</div>" +
+        <h2>""" + food + """</h2>
 
-                "<a class='btn' href='/add-cart?userId=" + userId + "&food=Pasta&price=249'>Add To Cart</a>" +
+        <div class='price'>₹""" + price + """</div>
 
-                "</div>" +
+        <a class='btn'
+        href='/add-cart?userId=""" + userId + "&food=" + food + "&price=" + price + """'>
+        Add To Cart
+        </a>
 
-                "</div>" +
-
-                "</body>" +
-
-                "</html>";
+        </div>
+        """;
     }
 
     // ================= ADD TO CART =================
 
     @GetMapping("/add-cart")
     public String addCart(
-
             @RequestParam int userId,
             @RequestParam String food,
             @RequestParam int price) {
@@ -391,13 +529,23 @@ public class HomeController {
 
             con.close();
 
-            return "<h1 style='color:green;text-align:center;margin-top:100px;'>Item Added To Cart</h1>" +
+            return """
+            <h1 style='text-align:center;color:green;margin-top:100px;'>
+            Item Added To Cart
+            </h1>
 
-                    "<center><a href='/cart/" + userId + "'>Go To Cart</a></center>";
+            <center>
+
+            <a href='/cart/""" + userId + """'>
+            Go To Cart
+            </a>
+
+            </center>
+            """;
 
         } catch (Exception e) {
 
-            return "<h1>Cart Error</h1>";
+            return "<h1>Cart Error : " + e.getMessage() + "</h1>";
         }
     }
 
@@ -426,67 +574,98 @@ public class HomeController {
 
                 total += rs.getInt("price");
 
-                data += "<div style='background:white;padding:20px;margin:20px;border-radius:10px;'>" +
+                data += """
+                <div style='background:white;
+                padding:20px;
+                margin:20px;
+                border-radius:10px;'>
 
-                        "<h2>" + rs.getString("food_name") + "</h2>" +
+                <h2>""" + rs.getString("food_name") + """</h2>
 
-                        "<h3>₹" + rs.getInt("price") + "</h3>" +
+                <h3>₹""" + rs.getInt("price") + """</h3>
 
-                        "</div>";
+                </div>
+                """;
             }
 
-            return "<html>" +
+            return """
+            <html>
 
-                    "<body style='font-family:Arial;background:#f5f5f5;padding:30px;'>" +
+            <body style='font-family:Arial;
+            background:#f5f5f5;
+            padding:30px;'>
 
-                    "<h1>Your Cart</h1>" +
+            <h1>Your Cart</h1>
 
-                    data +
+            """ + data + """
 
-                    "<h2>Total : ₹" + total + "</h2>" +
+            <h2>Total : ₹""" + total + """</h2>
 
-                    "<a href='/payment/" + userId + "/" + total + "' style='background:green;color:white;padding:15px;text-decoration:none;border-radius:10px;'>Proceed Payment</a>" +
+            <a href='/payment/""" + userId + "/" + total + """'
+            style='background:green;
+            color:white;
+            padding:15px;
+            text-decoration:none;
+            border-radius:10px;'>
 
-                    "</body>" +
+            Proceed Payment
 
-                    "</html>";
+            </a>
+
+            </body>
+
+            </html>
+            """;
 
         } catch (Exception e) {
 
-            return "Cart Error";
+            return "Cart Error : " + e.getMessage();
         }
     }
 
-    // ================= PAYMENT PAGE =================
+    // ================= PAYMENT =================
 
     @GetMapping("/payment/{userId}/{total}")
     public String payment(
-
             @PathVariable int userId,
             @PathVariable int total) {
 
-        return "<html>" +
+        return """
+        <html>
 
-                "<body style='font-family:Arial;text-align:center;padding-top:100px;background:#f5f5f5;'>" +
+        <body style='font-family:Arial;
+        text-align:center;
+        padding-top:100px;
+        background:#f5f5f5;'>
 
-                "<h1>Payment Page</h1>" +
+        <h1>Payment Page</h1>
 
-                "<h2>Total Amount : ₹" + total + "</h2>" +
+        <h2>Total Amount : ₹""" + total + """</h2>
 
-                "<br>" +
+        <br>
 
-                "<button style='padding:15px 30px;background:green;color:white;border:none;border-radius:10px;font-size:20px;'>Pay Now</button>" +
+        <button style='padding:15px 30px;
+        background:green;
+        color:white;
+        border:none;
+        border-radius:10px;
+        font-size:20px;'>
 
-                "<br><br>" +
+        Pay Now
 
-                "<h3>UPI / Card / Net Banking</h3>" +
+        </button>
 
-                "</body>" +
+        <br><br>
 
-                "</html>";
+        <h3>UPI / Card / Net Banking</h3>
+
+        </body>
+
+        </html>
+        """;
     }
 
-    // ================= PROFILE PAGE =================
+    // ================= PROFILE =================
 
     @GetMapping("/profile/{id}")
     public String profile(@PathVariable int id) {
@@ -505,38 +684,55 @@ public class HomeController {
 
             if (rs.next()) {
 
-                return "<html>" +
+                return """
+                <html>
 
-                        "<body style='font-family:Arial;background:#f5f5f5;padding:50px;'>" +
+                <body style='font-family:Arial;
+                background:#f5f5f5;
+                padding:50px;'>
 
-                        "<div style='background:white;padding:40px;border-radius:20px;width:400px;margin:auto;'>" +
+                <div style='background:white;
+                padding:40px;
+                border-radius:20px;
+                width:400px;
+                margin:auto;'>
 
-                        "<h1>User Profile</h1>" +
+                <h1>User Profile</h1>
 
-                        "<h3>Name : " + rs.getString("username") + "</h3>" +
+                <h3>Name : """ + rs.getString("username") + """</h3>
 
-                        "<h3>Email : " + rs.getString("email") + "</h3>" +
+                <h3>Email : """ + rs.getString("email") + """</h3>
 
-                        "<h3>Mobile : " + rs.getString("mobile") + "</h3>" +
+                <h3>Mobile : """ + rs.getString("mobile") + """</h3>
 
-                        "<h3>Address : " + rs.getString("address") + "</h3>" +
+                <h3>Address : """ + rs.getString("address") + """</h3>
 
-                        "<br>" +
+                <br>
 
-                        "<a href='/' style='background:red;color:white;padding:10px 20px;text-decoration:none;border-radius:10px;'>Logout</a>" +
+                <a href='/'
+                style='background:red;
+                color:white;
+                padding:10px 20px;
+                text-decoration:none;
+                border-radius:10px;'>
 
-                        "</div>" +
+                Logout
 
-                        "</body>" +
+                </a>
 
-                        "</html>";
+                </div>
+
+                </body>
+
+                </html>
+                """;
             }
 
             return "User Not Found";
 
         } catch (Exception e) {
 
-            return "Profile Error";
+            return "Profile Error : " + e.getMessage();
         }
     }
 }

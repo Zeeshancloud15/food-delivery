@@ -1,19 +1,24 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
+
 metadata:
-  name: food-ingress
+  name: food-app-ingress
+
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
+
 spec:
   ingressClassName: nginx
+
   rules:
-  - host: zeesha.agency
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: food-service
-            port:
-              number: 80
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+
+            backend:
+              service:
+                name: food-app-service
+
+                port:
+                  number: 80

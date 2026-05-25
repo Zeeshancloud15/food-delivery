@@ -3,59 +3,41 @@ package com.example.demo;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class HomeController {
 
-    String url =
-        "jdbc:mysql://foodapp.cxeakiucmdfw.eu-north-1.rds.amazonaws.com:3306/techapp";
-
+    String url = "jdbc:mysql://foodapp.cxeakiucmdfw.eu-north-1.rds.amazonaws.com:3306/techapp";
     String username = "admin";
-
     String password = "foodapp123";
 
     @GetMapping("/")
     public String home() {
 
         return "<html>" +
-
                 "<head>" +
-
                 "<title>ZeeshanCloudTech</title>" +
 
                 "<style>" +
 
-                "body{margin:0;font-family:Arial;background:#0f172a;color:white;}" +
+                "body{font-family:Arial;margin:0;background:#f5f5f5;}" +
 
-                ".navbar{background:#111827;padding:20px;display:flex;justify-content:space-between;}" +
+                ".navbar{background:#111;color:white;padding:20px;font-size:22px;font-weight:bold;}" +
 
-                ".logo{font-size:28px;font-weight:bold;color:#38bdf8;}" +
+                ".hero{padding:80px;text-align:center;background:#0d6efd;color:white;}" +
 
-                ".menu a{color:white;text-decoration:none;margin:15px;font-size:18px;}" +
+                ".hero h1{font-size:50px;}" +
 
-                ".hero{padding:80px;text-align:center;background:linear-gradient(to right,#0f172a,#1e3a8a);}" +
+                ".section{padding:40px;text-align:center;}" +
 
-                ".hero h1{font-size:55px;color:#38bdf8;}" +
+                ".card{background:white;padding:30px;margin:20px;display:inline-block;width:250px;border-radius:15px;box-shadow:0px 0px 10px rgba(0,0,0,0.2);}" +
 
-                ".hero p{font-size:22px;}" +
+                "input{width:80%;padding:12px;margin:10px;border:1px solid #ccc;border-radius:10px;}" +
 
-                ".btn{background:#38bdf8;color:black;padding:15px 30px;border-radius:10px;text-decoration:none;font-size:20px;}" +
-
-                ".services{padding:50px;text-align:center;}" +
-
-                ".card{background:#1e293b;width:300px;padding:20px;margin:20px;border-radius:20px;display:inline-block;}" +
-
-                ".card img{width:100%;height:200px;border-radius:15px;}" +
-
-                ".login{background:white;color:black;width:400px;margin:auto;padding:30px;border-radius:20px;}" +
-
-                "input{width:90%;padding:12px;margin:10px;border-radius:10px;border:1px solid gray;}" +
-
-                "button{padding:12px 25px;background:#38bdf8;border:none;border-radius:10px;font-size:18px;}" +
+                "button{background:#0d6efd;color:white;padding:12px 25px;border:none;border-radius:10px;font-size:18px;}" +
 
                 "</style>" +
 
@@ -65,19 +47,7 @@ public class HomeController {
 
                 "<div class='navbar'>" +
 
-                "<div class='logo'>ZeeshanCloudTech</div>" +
-
-                "<div class='menu'>" +
-
-                "<a href='#'>Home</a>" +
-
-                "<a href='#'>Services</a>" +
-
-                "<a href='#'>Clients</a>" +
-
-                "<a href='#'>Contact</a>" +
-
-                "</div>" +
+                "ZeeshanCloudTech" +
 
                 "</div>" +
 
@@ -85,21 +55,15 @@ public class HomeController {
 
                 "<h1>Cloud & AI Solutions</h1>" +
 
-                "<p>Helping Businesses Scale With AWS DevOps & AI</p>" +
-
-                "<br>" +
-
-                "<a class='btn' href='#login'>Connect With Team</a>" +
+                "<h2>Helping Businesses Scale With AWS DevOps & AI</h2>" +
 
                 "</div>" +
 
-                "<div class='services'>" +
+                "<div class='section'>" +
 
                 "<h1>Our Services</h1>" +
 
                 "<div class='card'>" +
-
-                "<img src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600'>" +
 
                 "<h2>AWS Cloud</h2>" +
 
@@ -109,8 +73,6 @@ public class HomeController {
 
                 "<div class='card'>" +
 
-                "<img src='https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600'>" +
-
                 "<h2>DevOps Automation</h2>" +
 
                 "<p>CI/CD Jenkins Kubernetes Docker</p>" +
@@ -118,8 +80,6 @@ public class HomeController {
                 "</div>" +
 
                 "<div class='card'>" +
-
-                "<img src='https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?w=600'>" +
 
                 "<h2>AI Solutions</h2>" +
 
@@ -129,19 +89,17 @@ public class HomeController {
 
                 "</div>" +
 
-                "<div id='login' style='padding:50px;text-align:center;'>" +
-
-                "<div class='login'>" +
+                "<div class='section'>" +
 
                 "<h1>Client Login</h1>" +
 
-                "<form action='/save-client'>" +
+                "<form action='/save-client' method='post'>" +
 
-                "<input type='text' name='name' placeholder='Company Name' required>" +
+                "<input type='text' name='name' placeholder='Enter Name' required><br>" +
 
-                "<input type='email' name='email' placeholder='Business Email' required>" +
+                "<input type='email' name='email' placeholder='Enter Email' required><br>" +
 
-                "<input type='text' name='phone' placeholder='Phone Number' required>" +
+                "<input type='text' name='phone' placeholder='Enter Phone Number' required><br>" +
 
                 "<button type='submit'>Connect Our Team</button>" +
 
@@ -149,17 +107,15 @@ public class HomeController {
 
                 "</div>" +
 
-                "</div>" +
+                "<div class='section'>" +
 
-                "<div style='padding:40px;text-align:center;background:#111827;'>" +
+                "<h1>CEO : Mohd Zeeshan Uddin</h1>" +
 
-                "<h2>CEO : Mohd Zeeshan Uddin</h2>" +
+                "<h2>Founder : Ibrahim</h2>" +
 
-                "<h3>Founder : Ibrahim</h3>" +
+                "<h3>Email : zeeshancloud15@gmail.com</h3>" +
 
-                "<p>Email : zeeshancloud15@gmail.com</p>" +
-
-                "<p>Phone : 7780369370</p>" +
+                "<h3>Phone : 7780369370</h3>" +
 
                 "</div>" +
 
@@ -168,7 +124,7 @@ public class HomeController {
                 "</html>";
     }
 
-    @GetMapping("/save-client")
+    @PostMapping("/save-client")
     public String saveClient(
             @RequestParam String name,
             @RequestParam String email,
@@ -178,8 +134,7 @@ public class HomeController {
 
             Connection con = DriverManager.getConnection(url, username, password);
 
-            String sql =
-                "INSERT INTO clients(name,email,phone) VALUES(?,?,?)";
+            String sql = "INSERT INTO clients(name,email,phone) VALUES(?,?,?)";
 
             PreparedStatement ps = con.prepareStatement(sql);
 
@@ -191,13 +146,59 @@ public class HomeController {
 
             con.close();
 
-            return "<h1 style='text-align:center;margin-top:100px;color:green;'>Client Data Saved Successfully</h1>";
+            return "<html>" +
+                    "<body style='font-family:Arial;text-align:center;padding-top:100px;background:#f5f5f5;'>" +
+                    "<h1 style='color:green;'>Client Data Saved Successfully</h1>" +
+                    "<a href='/clients'>View Clients</a>" +
+                    "</body>" +
+                    "</html>";
 
         } catch (Exception e) {
 
-            return "<h1>Database Error : "
-                    + e.getMessage() +
-                    "</h1>";
+            return "Database Error : " + e.getMessage();
         }
+    }
+
+    @GetMapping("/clients")
+    public String clients() {
+
+        String data = "";
+
+        try {
+
+            Connection con = DriverManager.getConnection(url, username, password);
+
+            String sql = "SELECT * FROM clients";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                data += "<div style='background:white;padding:20px;margin:20px;border-radius:10px;'>" +
+
+                        "<h2>Name : " + rs.getString("name") + "</h2>" +
+
+                        "<h3>Email : " + rs.getString("email") + "</h3>" +
+
+                        "<h3>Phone : " + rs.getString("phone") + "</h3>" +
+
+                        "</div>";
+            }
+
+            con.close();
+
+        } catch (Exception e) {
+
+            return "Database Error : " + e.getMessage();
+        }
+
+        return "<html>" +
+                "<body style='font-family:Arial;background:#f5f5f5;padding:30px;'>" +
+                "<h1>All Clients</h1>" +
+                data +
+                "</body>" +
+                "</html>";
     }
 }

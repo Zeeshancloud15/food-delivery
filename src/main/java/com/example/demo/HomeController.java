@@ -1,191 +1,203 @@
 package com.example.demo;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class HomeController {
 
+    String url =
+        "jdbc:mysql://foodapp.cxeakiucmdfw.eu-north-1.rds.amazonaws.com:3306/foodapp";
+
+    String username = "admin";
+
+    String password = "foodapp123";
+
     @GetMapping("/")
     public String home() {
 
-        return """
-        <html>
+        return "<html>" +
 
-        <head>
+                "<head>" +
 
-            <title>Zeeshan Food Delivery</title>
+                "<title>ZeeshanCloudTech</title>" +
 
-            <style>
+                "<style>" +
 
-                body{
-                    margin:0;
-                    padding:0;
-                    font-family:Arial;
-                    background:#f5f5f5;
-                }
+                "body{margin:0;font-family:Arial;background:#0f172a;color:white;}" +
 
-                .navbar{
-                    background:#ff5722;
-                    color:white;
-                    padding:20px;
-                    text-align:center;
-                    font-size:32px;
-                    font-weight:bold;
-                }
+                ".navbar{background:#111827;padding:20px;display:flex;justify-content:space-between;}" +
 
-                .banner{
-                    text-align:center;
-                    background:white;
-                    padding:40px;
-                }
+                ".logo{font-size:28px;font-weight:bold;color:#38bdf8;}" +
 
-                .banner h1{
-                    color:#ff5722;
-                }
+                ".menu a{color:white;text-decoration:none;margin:15px;font-size:18px;}" +
 
-                .foods{
-                    display:flex;
-                    flex-wrap:wrap;
-                    justify-content:center;
-                    padding:20px;
-                }
+                ".hero{padding:80px;text-align:center;background:linear-gradient(to right,#0f172a,#1e3a8a);}" +
 
-                .card{
-                    background:white;
-                    width:260px;
-                    margin:15px;
-                    border-radius:15px;
-                    overflow:hidden;
-                    box-shadow:0px 0px 10px rgba(0,0,0,0.2);
-                }
+                ".hero h1{font-size:55px;color:#38bdf8;}" +
 
-                .card img{
-                    width:100%;
-                    height:200px;
-                }
+                ".hero p{font-size:22px;}" +
 
-                .card h2{
-                    text-align:center;
-                }
+                ".btn{background:#38bdf8;color:black;padding:15px 30px;border-radius:10px;text-decoration:none;font-size:20px;}" +
 
-                .price{
-                    text-align:center;
-                    color:green;
-                    font-size:22px;
-                    font-weight:bold;
-                }
+                ".services{padding:50px;text-align:center;}" +
 
-                .btn{
-                    display:block;
-                    background:#ff5722;
-                    color:white;
-                    text-align:center;
-                    padding:12px;
-                    text-decoration:none;
-                    margin:15px;
-                    border-radius:10px;
-                }
+                ".card{background:#1e293b;width:300px;padding:20px;margin:20px;border-radius:20px;display:inline-block;}" +
 
-                .footer{
-                    background:#222;
-                    color:white;
-                    text-align:center;
-                    padding:30px;
-                    margin-top:40px;
-                }
+                ".card img{width:100%;height:200px;border-radius:15px;}" +
 
-            </style>
+                ".login{background:white;color:black;width:400px;margin:auto;padding:30px;border-radius:20px;}" +
 
-        </head>
+                "input{width:90%;padding:12px;margin:10px;border-radius:10px;border:1px solid gray;}" +
 
-        <body>
+                "button{padding:12px 25px;background:#38bdf8;border:none;border-radius:10px;font-size:18px;}" +
 
-            <div class="navbar">
+                "</style>" +
 
-                Zeeshan Food Delivery App
+                "</head>" +
 
-            </div>
+                "<body>" +
 
-            <div class="banner">
+                "<div class='navbar'>" +
 
-                <h1>Welcome To zeeshan Food Delivery App</h1>
+                "<div class='logo'>ZeeshanCloudTech</div>" +
 
-                <h3> “Delicious Food, One Click Away!” </h3>
+                "<div class='menu'>" +
 
-                <p>Phone : 7780369370</p>
+                "<a href='#'>Home</a>" +
 
-                <p>Email : zeeshancloud15@gmail.com</p>
+                "<a href='#'>Services</a>" +
 
-            </div>
+                "<a href='#'>Clients</a>" +
 
-            <div class="foods">
+                "<a href='#'>Contact</a>" +
 
-                <div class="card">
+                "</div>" +
 
-                    <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600">
+                "</div>" +
 
-                    <h2>Pizza</h2>
+                "<div class='hero'>" +
 
-                    <div class="price">₹299</div>
+                "<h1>Cloud & AI Solutions</h1>" +
 
-                    <a class="btn" href="#">Add To Cart</a>
+                "<p>Helping Businesses Scale With AWS DevOps & AI</p>" +
 
-                </div>
+                "<br>" +
 
-                <div class="card">
+                "<a class='btn' href='#login'>Connect With Team</a>" +
 
-                    <img src="https://images.unsplash.com/photo-1550547660-d9450f859349?w=600">
+                "</div>" +
 
-                    <h2>Burger</h2>
+                "<div class='services'>" +
 
-                    <div class="price">₹199</div>
+                "<h1>Our Services</h1>" +
 
-                    <a class="btn" href="#">Add To Cart</a>
+                "<div class='card'>" +
 
-                </div>
+                "<img src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600'>" +
 
-                <div class="card">
+                "<h2>AWS Cloud</h2>" +
 
-                    <img src="https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=600">
+                "<p>Cloud Migration & Infrastructure</p>" +
 
-                    <h2>Biryani</h2>
+                "</div>" +
 
-                    <div class="price">₹349</div>
+                "<div class='card'>" +
 
-                    <a class="btn" href="#">Add To Cart</a>
+                "<img src='https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600'>" +
 
-                </div>
+                "<h2>DevOps Automation</h2>" +
 
-                <div class="card">
+                "<p>CI/CD Jenkins Kubernetes Docker</p>" +
 
-                    <img src="https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=600">
+                "</div>" +
 
-                    <h2>Pasta</h2>
+                "<div class='card'>" +
 
-                    <div class="price">₹249</div>
+                "<img src='https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?w=600'>" +
 
-                    <a class="btn" href="#">Add To Cart</a>
+                "<h2>AI Solutions</h2>" +
 
-                </div>
+                "<p>AI Automation For Businesses</p>" +
 
-            </div>
+                "</div>" +
 
-            <div class="footer">
+                "</div>" +
 
-                <h2>Zeeshan Cloud Tech</h2>
+                "<div id='login' style='padding:50px;text-align:center;'>" +
 
-                <p>AWS | Docker | Kubernetes | DevOps</p>
+                "<div class='login'>" +
 
-                <p>Contact : 7780369370</p>
+                "<h1>Client Login</h1>" +
 
-                <p>Email : zeeshancloud15@gmail.com</p>
+                "<form action='/save-client'>" +
 
-            </div>
+                "<input type='text' name='name' placeholder='Company Name' required>" +
 
-        </body>
+                "<input type='email' name='email' placeholder='Business Email' required>" +
 
-        </html>
-        """;
+                "<input type='text' name='phone' placeholder='Phone Number' required>" +
+
+                "<button type='submit'>Connect Our Team</button>" +
+
+                "</form>" +
+
+                "</div>" +
+
+                "</div>" +
+
+                "<div style='padding:40px;text-align:center;background:#111827;'>" +
+
+                "<h2>CEO : Mohd Zeeshan Uddin</h2>" +
+
+                "<h3>Founder : Ibrahim</h3>" +
+
+                "<p>Email : zeeshancloud15@gmail.com</p>" +
+
+                "<p>Phone : 7780369370</p>" +
+
+                "</div>" +
+
+                "</body>" +
+
+                "</html>";
+    }
+
+    @GetMapping("/save-client")
+    public String saveClient(
+            @RequestParam String name,
+            @RequestParam String email,
+            @RequestParam String phone) {
+
+        try {
+
+            Connection con = DriverManager.getConnection(url, username, password);
+
+            String sql =
+                "INSERT INTO clients(name,email,phone) VALUES(?,?,?)";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setString(1, name);
+            ps.setString(2, email);
+            ps.setString(3, phone);
+
+            ps.executeUpdate();
+
+            con.close();
+
+            return "<h1 style='text-align:center;margin-top:100px;color:green;'>Client Data Saved Successfully</h1>";
+
+        } catch (Exception e) {
+
+            return "<h1>Database Error : "
+                    + e.getMessage() +
+                    "</h1>";
+        }
     }
 }

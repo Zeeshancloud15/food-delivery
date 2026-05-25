@@ -3,41 +3,49 @@ package com.example.demo;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class HomeController {
 
     String url = "jdbc:mysql://foodapp.cxeakiucmdfw.eu-north-1.rds.amazonaws.com:3306/techapp";
+
     String username = "admin";
+
     String password = "foodapp123";
 
     @GetMapping("/")
     public String home() {
 
         return "<html>" +
+
                 "<head>" +
+
                 "<title>ZeeshanCloudTech</title>" +
 
                 "<style>" +
 
                 "body{font-family:Arial;margin:0;background:#f5f5f5;}" +
 
-                ".navbar{background:#111;color:white;padding:20px;font-size:22px;font-weight:bold;}" +
+                ".navbar{background:#111;color:white;padding:20px;font-size:25px;font-weight:bold;text-align:center;}" +
 
-                ".hero{padding:80px;text-align:center;background:#0d6efd;color:white;}" +
+                ".hero{background:#0d6efd;color:white;padding:80px;text-align:center;}" +
 
                 ".hero h1{font-size:50px;}" +
 
                 ".section{padding:40px;text-align:center;}" +
 
-                ".card{background:white;padding:30px;margin:20px;display:inline-block;width:250px;border-radius:15px;box-shadow:0px 0px 10px rgba(0,0,0,0.2);}" +
+                ".card{background:white;width:250px;padding:25px;margin:20px;display:inline-block;border-radius:15px;box-shadow:0px 0px 10px rgba(0,0,0,0.2);}" +
 
-                "input{width:80%;padding:12px;margin:10px;border:1px solid #ccc;border-radius:10px;}" +
+                ".form-box{background:white;width:400px;margin:auto;padding:40px;border-radius:20px;box-shadow:0px 0px 15px rgba(0,0,0,0.2);}" +
 
-                "button{background:#0d6efd;color:white;padding:12px 25px;border:none;border-radius:10px;font-size:18px;}" +
+                "input{width:90%;padding:12px;margin:10px;border-radius:10px;border:1px solid #ccc;}" +
+
+                "button{background:#0d6efd;color:white;padding:12px 25px;border:none;border-radius:10px;font-size:18px;cursor:pointer;}" +
 
                 "</style>" +
 
@@ -91,6 +99,8 @@ public class HomeController {
 
                 "<div class='section'>" +
 
+                "<div class='form-box'>" +
+
                 "<h1>Client Login</h1>" +
 
                 "<form action='/save-client' method='post'>" +
@@ -107,11 +117,13 @@ public class HomeController {
 
                 "</div>" +
 
+                "</div>" +
+
                 "<div class='section'>" +
 
-                "<h1>CEO : Mohd Zeeshan Uddin</h1>" +
+                "<h2>CEO : Mohd Zeeshan Uddin</h2>" +
 
-                "<h2>Founder : Ibrahim</h2>" +
+                "<h3>Founder : Ibrahim</h3>" +
 
                 "<h3>Email : zeeshancloud15@gmail.com</h3>" +
 
@@ -126,6 +138,7 @@ public class HomeController {
 
     @PostMapping("/save-client")
     public String saveClient(
+
             @RequestParam String name,
             @RequestParam String email,
             @RequestParam String phone) {
@@ -139,7 +152,9 @@ public class HomeController {
             PreparedStatement ps = con.prepareStatement(sql);
 
             ps.setString(1, name);
+
             ps.setString(2, email);
+
             ps.setString(3, phone);
 
             ps.executeUpdate();
@@ -147,58 +162,22 @@ public class HomeController {
             con.close();
 
             return "<html>" +
+
                     "<body style='font-family:Arial;text-align:center;padding-top:100px;background:#f5f5f5;'>" +
-                    "<h1 style='color:green;'>Client Data Saved Successfully</h1>" +
-                    "<a href='/clients'>View Clients</a>" +
+
+                    "<h1 style='color:green;'>Data Stored Successfully In AWS RDS Database</h1>" +
+
+                    "<br>" +
+
+                    "<a href='/' style='background:#0d6efd;color:white;padding:15px 25px;text-decoration:none;border-radius:10px;'>Back To Home</a>" +
+
                     "</body>" +
+
                     "</html>";
 
         } catch (Exception e) {
 
-            return "Database Error : " + e.getMessage();
+            return "<h1>Database Error : " + e.getMessage() + "</h1>";
         }
-    }
-
-    @GetMapping("/clients")
-    public String clients() {
-
-        String data = "";
-
-        try {
-
-            Connection con = DriverManager.getConnection(url, username, password);
-
-            String sql = "SELECT * FROM clients";
-
-            PreparedStatement ps = con.prepareStatement(sql);
-
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-
-                data += "<div style='background:white;padding:20px;margin:20px;border-radius:10px;'>" +
-
-                        "<h2>Name : " + rs.getString("name") + "</h2>" +
-
-                        "<h3>Email : " + rs.getString("email") + "</h3>" +
-
-                        "<h3>Phone : " + rs.getString("phone") + "</h3>" +
-
-                        "</div>";
-            }
-
-            con.close();
-
-        } catch (Exception e) {
-
-            return "Database Error : " + e.getMessage();
-        }
-
-        return "<html>" +
-                "<body style='font-family:Arial;background:#f5f5f5;padding:30px;'>" +
-                "<h1>All Clients</h1>" +
-                data +
-                "</body>" +
-                "</html>";
     }
 }

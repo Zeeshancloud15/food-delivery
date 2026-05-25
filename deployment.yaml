@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 
 metadata:
-  name: food-app
+  name: TECH-app
 
 spec:
   replicas: 1
@@ -16,18 +16,18 @@ spec:
 
   selector:
     matchLabels:
-      app: food-app
+      app: TECH-app
 
   template:
     metadata:
       labels:
-        app: food-app
+        app: TECH-app
 
     spec:
       containers:
-        - name: food-app
+        - name: TECH-app
 
-          image: zeeshancloud15/food-app:latest
+          image: zeeshancloud15/TECH-app:latest
 
           imagePullPolicy: Always
 

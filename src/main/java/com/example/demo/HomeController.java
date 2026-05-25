@@ -12,70 +12,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HomeController {
 
-    String url = "jdbc:mysql://foodapp.cxeakiucmdfw.eu-north-1.rds.amazonaws.com:3306/techapp";
+    // DB NAME = zeedata
+    String url = "jdbc:mysql://foodapp.cxeakiucmdfw.eu-north-1.rds.amazonaws.com:3306/zeedata";
+
     String dbUser = "admin";
     String dbPass = "foodapp123";
 
-    // HOME PAGE
     @GetMapping("/")
-    public String homePage() {
-
-        return "<html>" +
-                "<head>" +
-                "<title>Sal Tech</title>" +
-                "<style>" +
-                "body{margin:0;font-family:Arial;background:#f5f5f5;}" +
-                ".navbar{background:#111;color:white;padding:20px;font-size:28px;font-weight:bold;text-align:center;}" +
-                ".hero{background:#0d6efd;color:white;padding:80px;text-align:center;}" +
-                ".hero h1{font-size:55px;margin:0;}" +
-                ".hero p{font-size:22px;}" +
-                ".section{padding:50px;text-align:center;}" +
-                ".card{background:white;width:260px;padding:25px;margin:20px;display:inline-block;border-radius:15px;box-shadow:0px 0px 15px rgba(0,0,0,0.2);}" +
-                ".form-box{background:white;width:400px;margin:auto;padding:40px;border-radius:20px;box-shadow:0px 0px 15px rgba(0,0,0,0.2);}" +
-                "input{width:90%;padding:12px;margin:10px;border:1px solid #ccc;border-radius:10px;}" +
-                "button{background:#0d6efd;color:white;padding:12px 25px;border:none;border-radius:10px;font-size:18px;cursor:pointer;}" +
-                ".footer{background:#111;color:white;text-align:center;padding:30px;margin-top:40px;}" +
-                "</style>" +
-                "</head>" +
-                "<body>" +
-
-                "<div class='navbar'>Sal Tech</div>" +
-
-                "<div class='hero'>" +
-                "<h1>Cloud & AI Solutions</h1>" +
-                "<p>Smart Cloud. Fast DevOps. Future AI.</p>" +
-                "</div>" +
-
-                "<div class='section'>" +
-                "<h1>Our Services</h1>" +
-                "<div class='card'><h2>AWS Cloud</h2><p>Cloud Migration & Infrastructure</p></div>" +
-                "<div class='card'><h2>DevOps Automation</h2><p>CI/CD Jenkins Docker Kubernetes</p></div>" +
-                "<div class='card'><h2>AI Solutions</h2><p>AI Automation For Businesses</p></div>" +
-                "</div>" +
-
-                "<div class='section'>" +
-                "<div class='form-box'>" +
-                "<h1>Connect With Team</h1>" +
-                "<form action='/save-client' method='post'>" +
-                "<input type='text' name='name' placeholder='Enter Your Name' required><br>" +
-                "<input type='email' name='email' placeholder='Enter Email' required><br>" +
-                "<input type='text' name='phone' placeholder='Enter Phone Number' required><br>" +
-                "<button type='submit'>Submit</button>" +
-                "</form>" +
-                "</div>" +
-                "</div>" +
-
-                "<div class='footer'>" +
-                "<h2>CEO : Mohd Zeeshan Uddin</h2>" +
-                "<h3>Email : zeeshancloud15@gmail.com</h3>" +
-                "<h3>Phone : 7780369370</h3>" +
-                "</div>" +
-
-                "</body>" +
-                "</html>";
+    public String home() {
+        return "Zee App Running Successfully";
     }
 
-    // SAVE DATA
     @PostMapping("/save-client")
     public String saveClient(
             @RequestParam String name,
@@ -83,11 +30,10 @@ public class HomeController {
             @RequestParam String phone) {
 
         try {
-
             Connection con = DriverManager.getConnection(url, dbUser, dbPass);
 
-            // IMPORTANT: table name must be "clients"
-            String sql = "INSERT INTO clients(name,email,phone) VALUES(?,?,?)";
+            // TABLE NAME = zeetable
+            String sql = "INSERT INTO zeetable(name,email,phone) VALUES(?,?,?)";
 
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setString(1, name);
@@ -98,12 +44,11 @@ public class HomeController {
 
             con.close();
 
-            return "<h1 style='color:green;text-align:center;margin-top:100px;'>Data Stored Successfully In AWS RDS</h1>" +
-                   "<div style='text-align:center;'><a href='/'>Go Back</a></div>";
+            return "Data Saved Successfully in zeetable";
 
         } catch (Exception e) {
             e.printStackTrace();
-            return "<h1>Error: " + e.getMessage() + "</h1>";
+            return "Error: " + e.getMessage();
         }
     }
 }

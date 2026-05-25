@@ -1,5 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
+
 metadata:
   name: food-app
 
@@ -8,6 +9,7 @@ spec:
 
   strategy:
     type: RollingUpdate
+
     rollingUpdate:
       maxUnavailable: 0
       maxSurge: 1
@@ -23,10 +25,11 @@ spec:
 
     spec:
       containers:
-      - name: food-app
-        image: zeeshancloud15/food-app:latest
+        - name: food-app
 
-        imagePullPolicy: Always
+          image: zeeshancloud15/food-app:latest
 
-        ports:
-        - containerPort: 8080
+          imagePullPolicy: Always
+
+          ports:
+            - containerPort: 8080

@@ -14,7 +14,7 @@ public class HomeController {
 
         <head>
 
-            <title>Zeeshan Cloud Tech Food Delivery</title>
+            <title>Zeeshan Food Delivery</title>
 
             <style>
 
@@ -103,15 +103,15 @@ public class HomeController {
 
             <div class="navbar">
 
-                Zeeshan Cloud Tech Food Delivery App
+                Zeeshan Food Delivery App
 
             </div>
 
             <div class="banner">
 
-                <h1>Welcome To Food Delivery App</h1>
+                <h1>Welcome To zeeshan Food Delivery App</h1>
 
-                <h3>Swiggy & Zomato Style Demo Application</h3>
+                <h3> “Delicious Food, One Click Away!” </h3>
 
                 <p>Phone : 7780369370</p>
 

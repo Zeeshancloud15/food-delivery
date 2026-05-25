@@ -2,16 +2,16 @@ apiVersion: v1
 kind: Service
 
 metadata:
-  name: food-app-service
+  name: TECH-app-service
 
 spec:
   selector:
-    app: food-app
+    app: TECH-app
 
   ports:
     - protocol: TCP
       port: 80
       targetPort: 8080
-      nodePort: 30080
+      nodePort: 30081
 
   type: NodePort

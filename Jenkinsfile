@@ -140,7 +140,7 @@ pipeline {
                     docker rm ${CONTAINER_NAME} || true
 
                     docker run -d \
-                    -p 8081:8080 \
+                    -p 8082:8080 \
                     --name ${CONTAINER_NAME} \
                     ${DOCKER_IMAGE}
                 '''

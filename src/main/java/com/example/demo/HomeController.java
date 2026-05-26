@@ -9,9 +9,9 @@ import java.sql.PreparedStatement;
 @RestController
 public class HomeController {
 
-    String url = "jdbc:mysql://foodapp.cxeakiucmdfw.eu-north-1.rds.amazonaws.com:3306/zeedata";
+    String url = "tech-app-db.cxeakiucmdfw.eu-north-1.rds.amazonaws.com";
     String dbUser = "admin";
-    String dbPass = "foodapp123";
+    String dbPass = "techapp123";
 
     // HOME PAGE
     @GetMapping("/")

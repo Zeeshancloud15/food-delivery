@@ -9,7 +9,7 @@ import java.sql.PreparedStatement;
 @RestController
 public class HomeController {
 
-    String url = "tech-app-db.cxeakiucmdfw.eu-north-1.rds.amazonaws.com";
+    String url = "database-1.cxeakiucmdfw.eu-north-1.rds.amazonaws.com";
     String dbUser = "admin";
     String dbPass = "techapp123";
 
